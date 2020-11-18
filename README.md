@@ -16,6 +16,10 @@ Run the tracking python script (src/among_us/src) to give visual in RVIZ of loca
 ```bash
 python rviz_track_position.py
 ```
+Run the taskmaster script (src/among_us/src) to start publishing tasks
+```bash
+python taskmaster.py
+```
 Launch RVIZ
 ```bash
 roslaunch stdr_launchers rviz.launch
