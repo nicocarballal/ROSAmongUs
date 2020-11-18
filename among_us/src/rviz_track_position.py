@@ -46,7 +46,7 @@ def callback(message):
   marker.lifetime.secs = 1000
   marker.lifetime.nsecs = 1000
 
-  if len(markerArray.markers) > 4:
+  if len(markerArray.markers) > len(robotArray):
     markerArray.markers.pop(0)
   markerArray.markers.append(marker)
 
@@ -67,6 +67,10 @@ def listener():
     rospy.Subscriber("robot1/odom", Odometry, callback)
     rospy.Subscriber("robot2/odom", Odometry, callback)
     rospy.Subscriber("robot3/odom", Odometry, callback)
+    rospy.Subscriber("robot4/odom", Odometry, callback)
+    rospy.Subscriber("robot5/odom", Odometry, callback)
+    rospy.Subscriber("robot6/odom", Odometry, callback)
+    rospy.Subscriber("robot7/odom", Odometry, callback)
 
     #Wait for messages to arrive on the subscribed topics, and exit the node
     #when it is killed with Ctrl+C
@@ -75,8 +79,8 @@ def listener():
 
 #Python's syntax for a main() method
 if __name__ == '__main__':
-    robotArray = ["robot0", "robot1", "robot2", "robot3"]
-    colorArray= [[1, .5, .5, .5], [1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]
+    robotArray = ["robot0", "robot1", "robot2", "robot3", "robot4", "robot5", "robot6", "robot7"]
+    colorArray= [[1, .5, .5, .5], [1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1], [1,0.5,1,0.5], [1,1,0.5,0.5], [1,1,0.7,0], [1,0.7,0.5,0.5]]
     markerArray = MarkerArray()
     #Run this program as a new node in the ROS computation graph
     #called /listener_<id>, where <id> is a randomly generated numeric
