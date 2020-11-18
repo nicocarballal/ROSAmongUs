@@ -150,7 +150,6 @@ Visualization Manager:
         co2: true
       Queue Size: 100
       Value: true
-<<<<<<< HEAD
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /tasks/markers
@@ -159,8 +158,6 @@ Visualization Manager:
         co2: true
       Queue Size: 100
       Value: true
-=======
->>>>>>> 81f46e8617d9f179984d7775d06e93906777b6d6
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
