@@ -21,7 +21,6 @@ rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/
 
 rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 11 10 0
 
-rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 13 11 0
 
 ## Can uncomment below to track robot position with markers automatically in RVIZ
 #python ~/ros_workspaces/project/src/among_us/src/rviz_track_position.py

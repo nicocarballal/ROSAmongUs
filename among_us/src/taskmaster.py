@@ -28,30 +28,37 @@ def taskmaster():
 ## Creates one task currently and publishes it to RVIZ
 def create_tasks():
     markerArray = MarkerArray()
-    marker = Marker()
-    marker.header.frame_id = "world"
-    marker.ns = "my_namespace"
-    marker.id = 1
-    marker.type = marker.CYLINDER
-    marker.action = marker.ADD
-    marker.pose.position.x = 3
-    marker.pose.position.y = 3
-    marker.pose.position.z = 0
-    marker.pose.orientation.x = 0
-    marker.pose.orientation.y = 0
-    marker.pose.orientation.z = 0
-    marker.pose.orientation.w = 0
-    marker.scale.x = 0.5
-    marker.scale.y = 0.5
-    marker.scale.z = 0.5
-    marker.color.a = 1
-    marker.color.r = 1
-    marker.color.g = 1
-    marker.color.b = 0
-    marker.lifetime.secs = 1000
-    marker.lifetime.nsecs = 1000
+    xArray = [3, 8, 12, 15, 1, 9, 15.5, 15.5, 22, 18]
+    yArray = [3, 5, 1, 1, 6.5, 6.5, 5, 7.5, 7, 10]
+
+    for i in range(10):
+
+      marker = Marker()
+      marker.header.frame_id = "world"
+      marker.ns = "my_namespace"
+      marker.id = i 
+      marker.type = marker.CYLINDER
+      marker.action = marker.ADD
+      marker.pose.position.x = xArray[i]
+      marker.pose.position.y = yArray[i]
+      marker.pose.position.z = 0
+      marker.pose.orientation.x = 0
+      marker.pose.orientation.y = 0
+      marker.pose.orientation.z = 0
+      marker.pose.orientation.w = 0
+      marker.scale.x = 0.5
+      marker.scale.y = 0.5
+      marker.scale.z = 0.5
+      marker.color.a = 1
+      marker.color.r = 1
+      marker.color.g = 1
+      marker.color.b = 0
+      marker.lifetime.secs = 1000
+      marker.lifetime.nsecs = 1000
+      markerArray.markers.append(marker)
+
+
     pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=10)
-    markerArray.markers.append(marker)
     pub.publish(markerArray)
 
 #Python's syntax for a main() method

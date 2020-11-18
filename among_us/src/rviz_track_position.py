@@ -36,9 +36,9 @@ def callback(message):
   marker.pose.orientation.y = message.pose.pose.orientation.y
   marker.pose.orientation.z = message.pose.pose.orientation.z
   marker.pose.orientation.w = message.pose.pose.orientation.w
-  marker.scale.x = 0.5
-  marker.scale.y = 0.5
-  marker.scale.z = 0.5
+  marker.scale.x = 0.35
+  marker.scale.y = 0.35
+  marker.scale.z = 0.35
   marker.color.a = colorArray[idx][0]# Don't forget to set the alpha!
   marker.color.r = colorArray[idx][1]
   marker.color.g = colorArray[idx][2]
