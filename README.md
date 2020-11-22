@@ -35,7 +35,11 @@ Within src/stdr_simulator, I've made a few changes to files for launching
 | among_us.yaml   | ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/maps/among_us    | Specifies the map for among us. Used adobe illustrator to get the walls of the actual among us map which is stored in among-us-edges-fixed-ai.png. |
 | among_us1.yaml  | ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots | Specifies robot parameters. For right now, it's a slight variation  of pandora_robot.yaml in the same folder.                                      |
 | among_us.xml    | ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots | Calls the yaml file. Direct copy except for one change of pandora_robot.xml                                                                        |
+<<<<<<< HEAD
 | among_rviz.launch    | ~/ros_workspaces/project/src/stdr_simulator/stdr_launchers/launch | Hosts the parameters for rviz to open manually tracking everything we want it to trackk so far                                                                        |
+=======
+| among_rviz.launch    | ~/ros_workspaces/project/src/stdr_simulator/stdr_launchers/launch??? | Hosts the parameters for rviz to open manually tracking everything we want it to trackk so far                                                                        |
+
 
 ### rviz_track_position.py
 Currently, this tracks the position of robots 0 through 3 and sets markers in RVIZ
@@ -43,7 +47,7 @@ Currently, this tracks the position of robots 0 through 3 and sets markers in RV
 What each of the scripts in src/among_us/src do (Not too important):
 ### test_publish_circle.py 
 Just publishes a marker into RVIZ 
->>>>>>> 81f46e8617d9f179984d7775d06e93906777b6d6
+
 ### test_color_variation 
 tests color variation in marker appearance
 
