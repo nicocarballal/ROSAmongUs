@@ -47,7 +47,7 @@ Currently, this tracks the position of robots 0 through 3 and sets markers in RV
 What each of the scripts in src/among_us/src do (Not too important):
 ### test_publish_circle.py 
 Just publishes a marker into RVIZ 
->>>>>>> 81f46e8617d9f179984d7775d06e93906777b6d6
+
 ### test_color_variation 
 tests color variation in marker appearance
 
