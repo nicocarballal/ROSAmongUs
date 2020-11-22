@@ -61,7 +61,7 @@ def create_tasks():
       marker.lifetime.secs = 1000
       marker.lifetime.nsecs = 1000
       markerArray.markers.append(marker)
-    pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=1)
+    pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=10)
     pub.publish(markerArray)
 
 def tf_frames():
@@ -69,9 +69,9 @@ def tf_frames():
 
     for i in range(10):
       t = geometry_msgs.msg.TransformStamped()
-      t.header.frame_id = task_names[i]
+      t.header.frame_id = "map_static"
       t.header.stamp = rospy.Time.now()
-      t.child_frame_id = "world"
+      t.child_frame_id = task_names[i]
       t.transform.translation.x = xArray[i]
       t.transform.translation.y = yArray[i]
       t.transform.translation.z = 0.0
@@ -91,8 +91,8 @@ if __name__ == '__main__':
     #copies of this node without having multiple nodes with the same
     #name, which ROS doesn't allow.
     task_names = ["task1", "task2", "task3", "task4", "task5", "task6", "task7", "task8", "task9", "task10"]
-    xArray = [3, 8, 12, 15, 1, 9, 15.5, 15.5, 22, 18]
-    yArray = [3, 5, 1, 1, 6.5, 6.5, 5, 7.5, 7, 10]
+    xArray = [12, 8, 12, 15, 1, 9, 15.5, 15.5, 22, 18]
+    yArray = [12, 5, 1, 1, 6.5, 6.5, 5, 7.5, 7, 10]
     rospy.init_node('taskmaster', anonymous=True)
 
     taskmaster()

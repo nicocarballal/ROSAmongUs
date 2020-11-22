@@ -13,7 +13,7 @@ import sys
 from geometry_msgs.msg import Twist
 
 #Define the method which contains the main functionality of the node.
-def controller(robot_frame, target_frame):
+def controller():
   """
   Controls a robot whose position is denoted by robot_frame,
   to go to a position denoted by target_frame
@@ -27,6 +27,7 @@ def controller(robot_frame, target_frame):
   #Create a publisher and a tf buffer, which is primed with a tf listener
   #TODO: replace 'INPUT TOPIC' with the correct name for the ROS topic on which
   # the robot accepts velocity inputs.
+
   pub = rospy.Publisher('robot0/cmd_vel', Twist, queue_size=10)
   tfBuffer = tf2_ros.Buffer()
   tfListener = tf2_ros.TransformListener(tfBuffer)
@@ -41,7 +42,7 @@ def controller(robot_frame, target_frame):
   while not rospy.is_shutdown():
     try:
       #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
-      trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time())
+      trans = tfBuffer.lookup_transform(robot_frames[0], task_frames[0], rospy.Time())
       # Process trans to get your state error
       # Generate a control command to send to the robot
       print(trans.transform.translation)
@@ -74,10 +75,12 @@ if __name__ == '__main__':
 
   #Run this program as a new node in the ROS computation graph 
   #called /turtlebot_controller.
+  task_frames = ["task1", "task2", "task3", "task4", "task5", "task6", "task7", "task8", "task9", "task10"]
+  robot_frames = ["robot0", "robot1", "robot2", "robot3", "robot4", "robot5", "robot6", "robot7", "robot8", "robot9"]
   rospy.init_node('among_us_controller', anonymous=True)
 
   try:
-    controller(robot0, target)
+    controller()
   except rospy.ROSInterruptException:
     pass
 
