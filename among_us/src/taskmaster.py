@@ -15,6 +15,10 @@ from visualization_msgs.msg import Marker, MarkerArray
 from nav_msgs.msg import Odometry
 import random 
 from time import sleep
+import rospy
+import tf2_ros
+import tf2_msgs.msg
+import geometry_msgs
 
 
 #Define the method which contains the main functionality of the node.
@@ -23,13 +27,14 @@ from time import sleep
 def taskmaster():
     while not rospy.is_shutdown():
         create_tasks()
+        tf_frames()
+
 
 
 ## Creates one task currently and publishes it to RVIZ
 def create_tasks():
     markerArray = MarkerArray()
-    xArray = [3, 8, 12, 15, 1, 9, 15.5, 15.5, 22, 18]
-    yArray = [3, 5, 1, 1, 6.5, 6.5, 5, 7.5, 7, 10]
+    
 
     for i in range(10):
 
@@ -56,10 +61,27 @@ def create_tasks():
       marker.lifetime.secs = 1000
       marker.lifetime.nsecs = 1000
       markerArray.markers.append(marker)
-
-
-    pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=10)
+    pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=1)
     pub.publish(markerArray)
+
+def tf_frames():
+    pub = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
+
+    for i in range(10):
+      t = geometry_msgs.msg.TransformStamped()
+      t.header.frame_id = task_names[i]
+      t.header.stamp = rospy.Time.now()
+      t.child_frame_id = "world"
+      t.transform.translation.x = xArray[i]
+      t.transform.translation.y = yArray[i]
+      t.transform.translation.z = 0.0
+      t.transform.rotation.x = 0.0
+      t.transform.rotation.y = 0.0
+      t.transform.rotation.z = 0.0
+      t.transform.rotation.w = 1.0
+      tfm = tf2_msgs.msg.TFMessage([t])
+      pub.publish(tfm)
+
 
 #Python's syntax for a main() method
 if __name__ == '__main__':
@@ -68,6 +90,9 @@ if __name__ == '__main__':
     #string. This randomly generated name means we can start multiple
     #copies of this node without having multiple nodes with the same
     #name, which ROS doesn't allow.
+    task_names = ["task1", "task2", "task3", "task4", "task5", "task6", "task7", "task8", "task9", "task10"]
+    xArray = [3, 8, 12, 15, 1, 9, 15.5, 15.5, 22, 18]
+    yArray = [3, 5, 1, 1, 6.5, 6.5, 5, 7.5, 7, 10]
     rospy.init_node('taskmaster', anonymous=True)
 
     taskmaster()
