@@ -24,6 +24,10 @@ Launch RVIZ
 ```bash
 roslaunch stdr_launchers among_rviz.launch
 ```
+Run the controller script (src/among_us/src) to have your robot0 go to task1
+```bash
+roslaunch stdr_launchers robot_control.py
+```
 Ensure that the rostopic "stdr_server/sources_visualization_marker" is being tracked in RVIZ by SourceMarkers
 
 ## Backend
