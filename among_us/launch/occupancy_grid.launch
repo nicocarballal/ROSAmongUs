@@ -1,11 +1,45 @@
 <launch>
   <!-- Frames of reference. -->
-  <arg name="fixed_frame" default="robot5" />
-  <arg name="sensor_frame" default="robot5_laser_0" />
+   <arg name="fixed_frame0" default="robot0" />
+  <arg name="sensor_frame0" default="robot0_laser_0" />
+   <arg name="fixed_frame1" default="robot1" />
+  <arg name="sensor_frame1" default="robot1_laser_0" />
+   <arg name="fixed_frame2" default="robot2" />
+  <arg name="sensor_frame2" default="robot2_laser_0" />
+   <arg name="fixed_frame3" default="robot3" />
+  <arg name="sensor_frame3" default="robot3_laser_0" />
+   <arg name="fixed_frame4" default="robot4" />
+  <arg name="sensor_frame4" default="robot4_laser_0" />
+  <arg name="fixed_frame5" default="robot5" />
+  <arg name="sensor_frame5" default="robot5_laser_0" />
+  <arg name="fixed_frame6" default="robot6" />
+  <arg name="sensor_frame6" default="robot6_laser_0" />
+  <arg name="fixed_frame7" default="robot7" />
+  <arg name="sensor_frame7" default="robot7_laser_0" />
 
   <!-- Topics. -->
-  <arg name="sensor_topic" default="/robot5/laser_0" />
-  <arg name="vis_topic" default="/vis/map" />
+  <arg name="sensor_topic0" default="/robot0/laser_0" />
+  <arg name="sensor_topic1" default="/robot1/laser_0" />
+  <arg name="sensor_topic2" default="/robot2/laser_0" />
+  <arg name="sensor_topic3" default="/robot3/laser_0" />
+  <arg name="sensor_topic4" default="/robot4/laser_0" />
+  <arg name="sensor_topic5" default="/robot5/laser_0" />
+  <arg name="sensor_topic6" default="/robot6/laser_0" />
+  <arg name="sensor_topic7" default="/robot7/laser_0" />
+  <arg name="vis_topic0" default="/vis/map0" />
+  <arg name="vis_topic1" default="/vis/map1" />
+  <arg name="vis_topic2" default="/vis/map2" />
+  <arg name="vis_topic3" default="/vis/map3" />
+  <arg name="vis_topic4" default="/vis/map4" />
+  <arg name="vis_topic5" default="/vis/map5" />
+  <arg name="vis_topic6" default="/vis/map6" />
+  <arg name="vis_topic7" default="/vis/map7" />
+  
+
+
+
+
+
 
   <!-- Dimensions and bounds. -->
   <arg name="x_num" default="25" />
@@ -30,11 +64,42 @@
         type="mapping_node.py"
         output="screen">
 
-    <param name="frames/fixed" value="$(arg fixed_frame)" />
-    <param name="frames/sensor" value="$(arg sensor_frame)" />
+    <param name="frames/fixed0" value="$(arg fixed_frame0)" />
+    <param name="frames/sensor0" value="$(arg sensor_frame0)" />
+    <param name="frames/fixed1" value="$(arg fixed_frame1)" />
+    <param name="frames/sensor1" value="$(arg sensor_frame1)" />
+    <param name="frames/fixed2" value="$(arg fixed_frame2)" />
+    <param name="frames/sensor2" value="$(arg sensor_frame2)" />
+    <param name="frames/fixed3" value="$(arg fixed_frame3)" />
+    <param name="frames/sensor3" value="$(arg sensor_frame3)" />
+    <param name="frames/fixed4" value="$(arg fixed_frame4)" />
+    <param name="frames/sensor4" value="$(arg sensor_frame4)" />
+    <param name="frames/fixed5" value="$(arg fixed_frame5)" />
+    <param name="frames/sensor5" value="$(arg sensor_frame5)" />
+    <param name="frames/fixed6" value="$(arg fixed_frame6)" />
+    <param name="frames/sensor6" value="$(arg sensor_frame6)" />
+    <param name="frames/fixed7" value="$(arg fixed_frame7)" />
+    <param name="frames/sensor7" value="$(arg sensor_frame7)" />
 
-    <param name="topics/vis" value="$(arg vis_topic)" />
-    <param name="topics/sensor" value="$(arg sensor_topic)" />
+    <param name="topics/vis0" value="$(arg vis_topic0)" />
+    <param name="topics/vis1" value="$(arg vis_topic1)" />
+    <param name="topics/vis2" value="$(arg vis_topic2)" />
+    <param name="topics/vis3" value="$(arg vis_topic3)" />
+    <param name="topics/vis4" value="$(arg vis_topic4)" />
+    <param name="topics/vis5" value="$(arg vis_topic5)" />
+    <param name="topics/vis6" value="$(arg vis_topic6)" />
+    <param name="topics/vis7" value="$(arg vis_topic7)" />
+    
+    <param name="topics/sensor0" value="$(arg sensor_topic0)" />
+    <param name="topics/sensor1" value="$(arg sensor_topic1)" />
+    <param name="topics/sensor2" value="$(arg sensor_topic2)" />
+    <param name="topics/sensor3" value="$(arg sensor_topic3)" />
+    <param name="topics/sensor4" value="$(arg sensor_topic4)" />
+    <param name="topics/sensor5" value="$(arg sensor_topic5)" />
+    <param name="topics/sensor6" value="$(arg sensor_topic6)" />
+    <param name="topics/sensor7" value="$(arg sensor_topic7)" />
+
+
 
     <param name="x/num" value="$(arg x_num)" />
     <param name="x/min" value="$(arg x_min)" />

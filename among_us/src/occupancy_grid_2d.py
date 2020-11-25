@@ -17,12 +17,17 @@ import numpy as np
 import math
 
 class OccupancyGrid2d(object):
-    def __init__(self):
+    def __init__(self, fixed_frame, sensor_frame, sensor_topic, vis_topic):
         self._intialized = False
 
         # Set up tf buffer and listener.
         self._tf_buffer = tf2_ros.Buffer()
         self._tf_listener = tf2_ros.TransformListener(self._tf_buffer)
+
+        self.fixed_frame = rospy.get_param(fixed_frame)
+        self.sensor_frame = rospy.get_param(sensor_frame)
+        self.sensor_topic = rospy.get_param(sensor_topic)
+        self.vis_topic = rospy.get_param(vis_topic)
 
     # Initialization and loading parameters.
     def Initialize(self):
@@ -84,13 +89,13 @@ class OccupancyGrid2d(object):
 
         # Topics.
         # TODO! You'll need to set values for class variables called:
-        self._sensor_topic = rospy.get_param("~topics/sensor")
-        self._vis_topic = rospy.get_param("~topics/vis")
+        self._sensor_topic = self.sensor_topic
+        self._vis_topic = self.vis_topic
 
         # Frames.
         # TODO! You'll need to set values for class variables called:
-        self._sensor_frame = rospy.get_param("~frames/sensor")
-        self._fixed_frame = rospy.get_param("~frames/fixed")
+        self._sensor_frame = self.sensor_frame
+        self._fixed_frame = self.fixed_frame
 
         return True
 
@@ -140,7 +145,8 @@ class OccupancyGrid2d(object):
 
         # Loop over all ranges in the LaserScan.
         length = len(msg.ranges)
-        print(msg.ranges)
+        print(self._sensor_frame)
+
         for idx, r in enumerate(msg.ranges):
             
             # Randomly throw out some rays to speed this up.
