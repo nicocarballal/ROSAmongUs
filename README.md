@@ -1,8 +1,12 @@
 # AmongUsROS
 
 ## Current abilities
+To run everything you need to start up our project run the bash file:
+```bash
+source run.sh
+```
 
-What you need to do to run:
+These are the commands the bash file runs:
 
 ```bash
 roslaunch stdr_launchers among_us.launch
