@@ -34,20 +34,15 @@
   <arg name="vis_topic5" default="/vis/map5" />
   <arg name="vis_topic6" default="/vis/map6" />
   <arg name="vis_topic7" default="/vis/map7" />
-  
-
-
-
-
 
 
   <!-- Dimensions and bounds. -->
-  <arg name="x_num" default="25" />
-  <arg name="x_min" default="-10.0" />
-  <arg name="x_max" default="10.0" />
-  <arg name="y_num" default="25" />
-  <arg name="y_min" default="-10.0" />
-  <arg name="y_max" default="10.0" />
+  <arg name="x_num" default="8" />
+  <arg name="x_min" default="-2.5" />
+  <arg name="x_max" default="2.5" />
+  <arg name="y_num" default="8" />
+  <arg name="y_min" default="-2.5" />
+  <arg name="y_max" default="2.5" />
 
   <!-- Update parameters. -->
   <arg name="occupied_update" default="0.7" />

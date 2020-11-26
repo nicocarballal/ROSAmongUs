@@ -160,17 +160,23 @@ class OccupancyGrid2d(object):
             angle = msg.angle_min + idx * msg.angle_increment
 
             # Throw out this point if it is too close or too far away.
+            '''
             if r > msg.range_max:
                 rospy.logwarn("%s: Range %f > %f was too large.",
                               self._name, r, msg.range_max)
-                continue
+            '''
             if r < msg.range_min:
                 rospy.logwarn("%s: Range %f < %f was too small.",
                               self._name, r, msg.range_min)
 
                 continue
-       
-            for i in np.arange(0, r +self._x_res, self._x_res):
+
+            if r > msg.range_max:
+                r = msg.range_max
+        
+            for i in np.arange(0, r + self._x_res, self._x_res):
+                if (i >= msg.range_max):
+                    break
                 x = sensor_x + i * math.cos(yaw + angle)
                 y = sensor_y + i * math.sin(yaw + angle)
                 (idx_x, idx_y) = self.PointToVoxel(x, y)
