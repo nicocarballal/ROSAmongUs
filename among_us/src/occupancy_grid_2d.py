@@ -145,7 +145,6 @@ class OccupancyGrid2d(object):
 
         # Loop over all ranges in the LaserScan.
         length = len(msg.ranges)
-        print(self._sensor_frame)
 
         for idx, r in enumerate(msg.ranges):
             
