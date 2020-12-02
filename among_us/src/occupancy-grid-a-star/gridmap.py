@@ -15,7 +15,7 @@ class OccupancyGridMap:
 
         self.data = data_array
         self.dim_cells = data_array.shape
-        self.dim_meters = (self.dim_cells[0] * cell_size, self.dim_cells[1] * cell_size)
+        self.dim_meters = (self.dim_cells[1] * cell_size, self.dim_cells[0] * cell_size)
         self.cell_size = cell_size
         self.occupancy_threshold = occupancy_threshold
         # 2D array to mark visited nodes (in the beginning, no node has been visited)
@@ -27,7 +27,7 @@ class OccupancyGridMap:
         :param point_idx: a point (x, y) in data array
         """
         x_index, y_index = point_idx
-        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[0] or y_index >= self.dim_cells[1]:
+        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[1] or y_index >= self.dim_cells[0]:
             raise Exception('Point is outside map boundary')
 
         self.visited[y_index][x_index] = 1.0
@@ -49,7 +49,7 @@ class OccupancyGridMap:
         :return: True if the given point is visited, false otherwise
         """
         x_index, y_index = point_idx
-        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[0] or y_index >= self.dim_cells[1]:
+        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[1] or y_index >= self.dim_cells[0]:
             raise Exception('Point is outside map boundary')
 
         if self.visited[y_index][x_index] == 1.0:
@@ -75,7 +75,7 @@ class OccupancyGridMap:
         :return: the occupancy value of the given point
         """
         x_index, y_index = point_idx
-        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[0] or y_index >= self.dim_cells[1]:
+        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[1] or y_index >= self.dim_cells[0]:
             raise Exception('Point is outside map boundary')
 
         return self.data[y_index][x_index]
@@ -98,7 +98,7 @@ class OccupancyGridMap:
         :param new_value: the new occupancy values
         """
         x_index, y_index = point_idx
-        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[0] or y_index >= self.dim_cells[1]:
+        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[1] or y_index >= self.dim_cells[0]:
             raise Exception('Point is outside map boundary')
 
         self.data[y_index][x_index] = new_value
@@ -121,7 +121,7 @@ class OccupancyGridMap:
         :return: True if the given point is inside the map, false otherwise
         """
         x_index, y_index = point_idx
-        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[0] or y_index >= self.dim_cells[1]:
+        if x_index < 0 or y_index < 0 or x_index >= self.dim_cells[1] or y_index >= self.dim_cells[0]:
             return False
         else:
             return True
@@ -144,7 +144,18 @@ class OccupancyGridMap:
         :return: True if the given point is occupied, false otherwise
         """
         x_index, y_index = point_idx
-        if self.get_data_idx((x_index, y_index)) <= self.occupancy_threshold:
+        d = 5
+        x_left = (x_index - d, y_index)
+        x_down = (x_index, y_index - d)
+        x_right = (x_index + d, y_index)
+        x_up = (x_index, y_index + d)
+        data = self.get_data_idx((x_index, y_index)) 
+        data_left = self.get_data_idx(x_left)
+        data_down = self.get_data_idx(x_down)
+        data_right = self.get_data_idx(x_right)
+        data_up = self.get_data_idx(x_up) 
+        points = [data, data_left, data_down, data_right, data_up]
+        if any(x <= self.occupancy_threshold for x in points):
             return True
         else:
             return False

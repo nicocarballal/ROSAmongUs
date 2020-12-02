@@ -6,12 +6,12 @@ from utils import plot_path
 
 if __name__ == '__main__':
     # load the map
-    gmap = OccupancyGridMap.from_png('among-us-edges-fixed-ai.png', .05)
+    gmap = OccupancyGridMap.from_png('among-us-edges-fixed-ai1.png', .05)
 
 
 
     # set a start and an end node (in meters)
-    start_node = (12, 9) ##AMONG US: Where we are
+    start_node = (15, 12) ##AMONG US: Where we are
     goal_node = (8, 5) ##AMONG US: Where the task is :)
 
     # run A*
