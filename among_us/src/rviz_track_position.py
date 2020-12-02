@@ -79,6 +79,7 @@ def listener():
 
 #Python's syntax for a main() method
 if __name__ == '__main__':
+    print("RVIZ Robot Tracking Initiated")
     robotArray = ["robot0", "robot1", "robot2", "robot3", "robot4", "robot5", "robot6", "robot7"]
     colorArray= [[1, .5, .5, .5], [1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1], [1,0.5,1,0.5], [1,1,0.5,0.5], [1,1,0.7,0], [1,0.7,0.5,0.5]]
     markerArray = MarkerArray()

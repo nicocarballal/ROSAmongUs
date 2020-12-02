@@ -11,6 +11,7 @@ import rospy
 import sys
 
 if __name__ == "__main__":
+	print('Occupancy Grid initiated')
 	fixed_frames = ['~frames/fixed0', '~frames/fixed1', '~frames/fixed2', '~frames/fixed3','~frames/fixed4','~frames/fixed5','~frames/fixed6','~frames/fixed7']
 	sensor_frames = ['~frames/sensor0', '~frames/sensor1', '~frames/sensor2', '~frames/sensor3','~frames/sensor4','~frames/sensor5','~frames/sensor6','~frames/sensor7']
 	vis_topics = ['~topics/vis0', '~topics/vis1', '~topics/vis2', '~topics/vis3','~topics/vis4','~topics/vis5','~topics/vis6','~topics/vis7']

@@ -7,13 +7,17 @@
 #Import the rospy package. For an import to work, it must be specified
 #in both the package manifest AND the Python file in which it is used.
 import rospy
-import tf2_ros
 import sys
+import tf2_ros
+import tf2_msgs.msg
 
+import geometry_msgs
 from geometry_msgs.msg import Twist
+from among_us.msg import RobotTaskUpdate
+from visualization_msgs.msg import Marker, MarkerArray
 
 #Define the method which contains the main functionality of the node.
-def controller():
+def callback(msg, args):
   """
   Controls a robot whose position is denoted by robot_frame,
   to go to a position denoted by target_frame
@@ -27,10 +31,35 @@ def controller():
   #Create a publisher and a tf buffer, which is primed with a tf listener
   #TODO: replace 'INPUT TOPIC' with the correct name for the ROS topic on which
   # the robot accepts velocity inputs.
+  print("CALLBACK")
+  print("CALLBACK")
+  print("CALLBACK")
+  robot_name = args[0]
+  task_name = args[1]
+  tfBuffer = args[2]
+  tfListener = args[3]
 
-  pub = rospy.Publisher('robot0/cmd_vel', Twist, queue_size=10)
-  tfBuffer = tf2_ros.Buffer()
-  tfListener = tf2_ros.TransformListener(tfBuffer)
+  X = 12
+  Y = 12
+
+
+  pub = rospy.Publisher(robot_name + '/cmd_vel', Twist, queue_size=10)
+
+  pubtf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
+
+  t = geometry_msgs.msg.TransformStamped()
+  t.header.frame_id = "map_static"
+  t.header.stamp = rospy.Time.now()
+  t.child_frame_id = robot_name + 'goal'
+  t.transform.translation.x = X
+  t.transform.translation.y = Y
+  t.transform.translation.z = 0.0
+  t.transform.rotation.x = 0.0
+  t.transform.rotation.y = 0.0
+  t.transform.rotation.z = 0.0
+  t.transform.rotation.w = 1.0
+  tfm = tf2_msgs.msg.TFMessage([t])
+  pubtf.publish(tfm)
   
   # Create a timer object that will sleep long enough to result in
   # a 10Hz publishing rate
@@ -39,34 +68,71 @@ def controller():
   K1 = 0.3
   K2 = 1
   # Loop until the node is killed with Ctrl-C
-  while not rospy.is_shutdown():
+
+  keepPath = True
+
+  while keepPath == True:
     try:
+    
       #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
-      trans = tfBuffer.lookup_transform(robot_frames[0], task_frames[0], rospy.Time())
+      print('try')
+      trans = tfBuffer.lookup_transform(robot_name, t.child_frame_id, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
       # Process trans to get your state error
       # Generate a control command to send to the robot
-      print(trans.transform.translation)
       translation_error = trans.transform.translation.x * K1
       rotation_error = trans.transform.translation.y 
 
+      print(translation_error)
+
+      if (translation_error) < .01:
+        pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
+        updateMsg = RobotTaskUpdate()
+        updateMsg.robot_name = robot_name
+        updateMsg.need_task_update = False
+        updateMsg.need_path_update = True
+        pub_update.publish(updateMsg)
+        keepPath = False
+        ### Publish to 'robot_name/task' with need_path_update!
 
       control_command = Twist()
-
       control_command.linear.x = translation_error
       control_command.angular.z = rotation_error * -K2
-     
 
       #TODO: Generate this
 
       #################################### end your code ###############
 
-      pub.publish(control_command)
-    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-      pass
-    # Use our rate object to sleep until it is time to publish again
-    r.sleep()
+      print(control_command)
 
-      
+      pub.publish(control_command)
+    
+      # Use our rate object to sleep until it is time to publish again
+      r.sleep()
+    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+      break
+
+
+
+def create_subscribers():
+    tfBuffer = tf2_ros.Buffer()
+    tfListener = tf2_ros.TransformListener(tfBuffer)
+    sub0 = rospy.Subscriber('/tf', tf2_msgs.msg.TFMessage, callback, ('robot0', 'task0', tfBuffer, tfListener))
+    rospy.spin()
+
+
+def callback_holder():
+    pass
+
+
+def publish_task_update(robot_name, need_task_update, need_path_update):
+    pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
+    updateMsg = RobotTaskUpdate()
+    updateMsg.robot_name = robot_name
+    updateMsg.need_task_update = False
+    updateMsg.need_path_update = True
+    print('hey')
+    pub_update.publish(updateMsg)
+
 # This is Python's sytax for a main() method, which is run by default
 # when exectued in the shell
 if __name__ == '__main__':
@@ -75,12 +141,25 @@ if __name__ == '__main__':
 
   #Run this program as a new node in the ROS computation graph 
   #called /turtlebot_controller.
-  task_frames = ["task1", "task2", "task3", "task4", "task5", "task6", "task7", "task8", "task9", "task10"]
-  robot_frames = ["robot0", "robot1", "robot2", "robot3", "robot4", "robot5", "robot6", "robot7", "robot8", "robot9"]
+  print("Robot controller started.")
+  taskLocations = {"task1": (12, 12), "task2": (8, 5), "task3": (12, 1), "task4": (15,1), "task5": (1,6.5), 
+    "task6": (9, 6.5), "task7": (15.5, 5), "task8": (15.5, 8.5), "task9": (22, 7), "task10": (18,10)}
+
+  robot0Tasks = ["task4", "task7", "task1", "task3"]
+  robot1Tasks = ["task5", "task3", "task2", "task9"]
+  robot2Tasks = ["task6", "task5", "task10", "task1"]
+  robot3Tasks = ["task7", "task1", "task2", "task4"]
+  robot4Tasks = ["task8", "task9", "task4", "task2"]
+  robot5Tasks = ["task9", "task8", "task3", "task6"]
+  robot6Tasks = ["task10", "task6", "task1", "task8"]
+  robot7Tasks = ["task1", "task4", "task5", "task10"]
+
+  robotTasks = {"robot0": robot0Tasks, "robot1": robot1Tasks, "robot2": robot2Tasks, 
+  "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks, "robot6": robot6Tasks, "robot7": robot7Tasks}
+
+  
+
   rospy.init_node('among_us_controller', anonymous=True)
 
-  try:
-    controller()
-  except rospy.ROSInterruptException:
-    pass
+  create_subscribers()
 

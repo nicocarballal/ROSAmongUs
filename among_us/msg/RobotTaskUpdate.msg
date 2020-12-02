@@ -1,0 +1,3 @@
+string robot_name
+bool need_task_update
+bool need_path_update
