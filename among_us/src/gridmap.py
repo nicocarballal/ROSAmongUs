@@ -144,27 +144,28 @@ class OccupancyGridMap:
         :return: True if the given point is occupied, false otherwise
         """
         x_index, y_index = point_idx
-        d = 8
-        x_left = (x_index - d, y_index)
-        x_down = (x_index, y_index - d)
-        x_right = (x_index + d, y_index)
-        x_up = (x_index, y_index + d)
-        x_left_up = (x_index - d, y_index + d)
-        x_left_down = (x_index - d, y_index - d)
-        x_right_up = (x_index + d, y_index + d)
-        x_right_down = (x_index + d, y_index - d)
-        data = self.get_data_idx((x_index, y_index)) 
-        data_left = self.get_data_idx(x_left)
-        data_down = self.get_data_idx(x_down)
-        data_right = self.get_data_idx(x_right)
-        data_up = self.get_data_idx(x_up) 
-        data_left_up = self.get_data_idx(x_left_up)
-        data_left_down = self.get_data_idx(x_left_down)
-        data_right_up = self.get_data_idx(x_right_up)
-        data_right_down = self.get_data_idx(x_right_down)
-        points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
-        if any(x <= self.occupancy_threshold for x in points):
-            return True
+        l = 5
+        for d in range(1, 9):
+            x_left = (x_index - d, y_index)
+            x_down = (x_index, y_index - d)
+            x_right = (x_index + d, y_index)
+            x_up = (x_index, y_index + d)
+            x_left_up = (x_index - d, y_index + d)
+            x_left_down = (x_index - d, y_index - d)
+            x_right_up = (x_index + d, y_index + d)
+            x_right_down = (x_index + d, y_index - d)
+            data = self.get_data_idx((x_index, y_index)) 
+            data_left = self.get_data_idx(x_left)
+            data_down = self.get_data_idx(x_down)
+            data_right = self.get_data_idx(x_right)
+            data_up = self.get_data_idx(x_up) 
+            data_left_up = self.get_data_idx(x_left_up)
+            data_left_down = self.get_data_idx(x_left_down)
+            data_right_up = self.get_data_idx(x_right_up)
+            data_right_down = self.get_data_idx(x_right_down)
+            points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
+            if any(x <= self.occupancy_threshold for x in points):
+                return True
         else:
             return False
 

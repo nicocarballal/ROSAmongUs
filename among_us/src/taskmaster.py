@@ -125,17 +125,30 @@ def task_manager():
     '''
     print(msg1)
     if msg1.need_path_update:
-      print('DSFJLKDLKFJ:SKL:JDFSLJKDSFJKL')
-      robotPaths[robot_name].pop(0)
-      pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
-      updateMsg = RobotTaskUpdate()
-      updateMsg.robot_name = robot_name
-      updateMsg.need_task_update = False
-      updateMsg.need_path_update = False
-      pub_update.publish(updateMsg)
-      print('New Path:')
-      print('--------')
-      print(robotPaths[robot_name][0])
+      if len(robotPaths[robot_name]) > 0:
+        robotPaths[robot_name].pop(0)
+        pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
+        updateMsg = RobotTaskUpdate()
+        updateMsg.robot_name = robot_name
+        updateMsg.need_task_update = False
+        updateMsg.need_path_update = False
+        pub_update.publish(updateMsg)
+        print('New Path:')
+        print('--------')
+        print(robotPaths[robot_name][0])
+      elif len(robotTasks[robot_name]) > 0:
+        X = msg2.pose.pose.position.x
+        Y = msg2.pose.pose.position.y
+        taskX = taskLocations[robotTasks[robot_name][0]][0]
+        taskY = taskLocations[robotTasks[robot_name][0]][1]
+        path = a_star_function(X, Y, taskX, taskY)
+        robotPaths[robot_name] = path
+        robotPaths[robot_name].pop(0)
+        robotTasks[robot_name].pop(0)
+      else:
+        ## don't want the controller to go anywhere new
+        return
+
 
 
     X = msg2.pose.pose.position.x
@@ -164,7 +177,7 @@ def task_manager():
   except Exception as e:
     print(e)
     print('publishing initial goal')
-    if (len(robotPaths[robot_name]) == 0):
+    if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
       X = 12
       Y = 10
       taskX = taskLocations[robotTasks[robot_name][0]][0]
@@ -172,7 +185,16 @@ def task_manager():
       path = a_star_function(X, Y, taskX, taskY)
       robotPaths[robot_name] = path
       robotPaths[robot_name].pop(0)
-
+      robotTasks[robot_name].pop(0)
+    if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
+        X = msg2.pose.pose.position.x
+        Y = msg2.pose.pose.position.y
+        taskX = taskLocations[robotTasks[robot_name][0]][0]
+        taskY = taskLocations[robotTasks[robot_name][0]][1]
+        path = a_star_function(X, Y, taskX, taskY)
+        robotPaths[robot_name] = path
+        robotPaths[robot_name].pop(0)
+        robotTasks[robot_name].pop(0)
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = "map_static"
@@ -203,7 +225,7 @@ if __name__ == '__main__':
     taskLocations = {"task1": (12, 12), "task2": (8, 5), "task3": (12, 1), "task4": (15,1), "task5": (1,6.5), 
     "task6": (9, 6.5), "task7": (15.5, 5), "task8": (15.5, 8.5), "task9": (22, 7), "task10": (18,10)}
 
-    robot0Tasks = ["task4", "task7", "task1", "task3"]
+    robot0Tasks = ["task1", "task7", "task4", "task3"]
     robot1Tasks = ["task5", "task3", "task2", "task9"]
     robot2Tasks = ["task6", "task5", "task10", "task1"]
     robot3Tasks = ["task7", "task1", "task2", "task4"]

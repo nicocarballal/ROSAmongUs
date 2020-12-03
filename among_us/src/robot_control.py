@@ -44,9 +44,16 @@ def controller(robot_frame, target_frame):
   # a 10Hz publishing rate
   r = rospy.Rate(10) # 10hz
 
-  K1 = 0.3
-  K2 = 1.5
+  K1 = .5
+  K2 = .8
+  K1d = .1
+  K2d = .1
   # Loop until the node is killed with Ctrl-C
+
+  t_last = rospy.get_time()
+  last_translation_x_error = 0
+  last_rotation_error = 0 
+
 
   keepPath = True
 
@@ -59,18 +66,49 @@ def controller(robot_frame, target_frame):
 
       # Process trans to get your state error
       # Generate a control command to send to the robot
-      translation_x_error = trans.transform.translation.x * K1
+      translation_x_error = trans.transform.translation.x
       rotation_error = trans.transform.translation.y 
-      
+
+      '''
+      t_current = rospy.get_time()
+      dt = t_current - t_last
+      t_last = t_current
+
+      translation_x_error_der = (translation_x_error - last_translation_x_error)/dt
+      rotation_error_der = (rotation_error - last_rotation_error)/dt
+      print(translation_x_error_der, rotation_error_der)
+      print('----------')
+
+      '''
+
+      last_translation_x_error = translation_x_error
+      last_rotation_error = rotation_error
+
       if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
         publish_task_update(robot_frame, False, True)
+        control_command.linear.x = 0
+        control_command.angular.z = 0
         
         ### Publish to 'robot_name/task' with need_path_update!
 
+
+
       control_command = Twist()
 
-      control_command.linear.x = translation_x_error
-      control_command.angular.z = rotation_error * -K2
+      print(rotation_error)
+
+      if abs(rotation_error) > .2:
+        control_command.angular.z = rotation_error * -K2
+      else:
+        control_command.linear.x = translation_x_error * K1 
+        control_command.angular.z = rotation_error * -K2
+      
+
+
+      '''
+      control_command.linear.x = translation_x_error * K1 + translation_x_error_der * K1d
+      control_command.angular.z = rotation_error * -K2 + rotation_error_der *K2d
+      '''
 
       #TODO: Generate this
 
@@ -121,8 +159,6 @@ if __name__ == '__main__':
 
   robotTasks = {"robot0": robot0Tasks, "robot1": robot1Tasks, "robot2": robot2Tasks, 
   "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks, "robot6": robot6Tasks, "robot7": robot7Tasks}
-
-  
 
   rospy.init_node('among_us_controller', anonymous=True)
 
