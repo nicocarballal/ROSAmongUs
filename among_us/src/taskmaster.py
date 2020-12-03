@@ -32,11 +32,13 @@ from time import sleep
 
 
 def taskmaster():
+    c = True 
     while not rospy.is_shutdown():
-      initialize_task_manager()
       create_tasks()
       tf_frames()
       task_manager()
+      
+      
         
         #task_manager()
 
@@ -95,84 +97,19 @@ def tf_frames():
       pub.publish(tfm)
     r.sleep()
 
-
-
-def initialize_task_manager():
-    global initialize
-    while (initialize == True):
-      X = 12
-      Y = 10
-      robot_name = 'robot0'
-      taskX = taskLocations[robotTasks[robot_name][0]][0]
-      taskY = taskLocations[robotTasks[robot_name][0]][1]
-      '''
-      print("Robot Location: (" + str(X) + "," + str(Y) + ")")
-      print("Task Location: (" + str(taskX) + "," + str(taskY) + ")")
-      '''
-
-      pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
-
-      path = a_star_function(X, Y, taskX, taskY)
-
-      robotPaths[robot_name] = path
-      #robotTasks[robot_name].pop(0)
-
-      t = geometry_msgs.msg.TransformStamped()
-      t.header.frame_id = "world"
-      t.child_frame_id = robot_name + 'goal'
-      t.header.stamp = rospy.Time.now()
-      
-      t.transform.translation.x = path[1][0]
-      t.transform.translation.y = path[1][1]
-      t.transform.translation.z = 0.0
-      t.transform.rotation.x = 0.0
-      t.transform.rotation.y = 0.0
-      t.transform.rotation.z = 0.0
-      t.transform.rotation.w = 1.0
-      tfm = tf2_msgs.msg.TFMessage([t])
-      pub0.publish(tfm)
-      r.sleep()
-
-
-def callback(msg):
-    global initialize
-    print('hey this was run')
-    initialize = False
-    needPathUpdate = msg.need_path_update
-    print(needPathUpdate)
-    if (needPathUpdate == True):
-      robot_subscriber(msg.robot_name)
-    '''
-    needTaskUpdate = msg.need_task_update
-    if (needTaskUpdate):
-      robotTasks[msg.robot_name] = robotTasks[msg.robot_name].pop(0)
-      robotPaths[msg.robot_name] = []
-      if len(robotTasks > 0):
-        new_path = robot_subscriber(msg.robot_name)
-    '''
-
-
 def task_manager():
-    sub0 = rospy.Subscriber('/robot0/taskUpdate', RobotTaskUpdate, callback)
-    rospy.spin()
-
-
-
-def callback2(msg, args):
-
-    X = msg.pose.pose.position.x
-    Y = msg.pose.pose.position.y
-    robot_name = args
-    taskX = taskLocations[robotTasks[robot_name][0]][0]
-    taskY = taskLocations[robotTasks[robot_name][0]][1]
-    '''
-    print("Robot Location: (" + str(X) + "," + str(Y) + ")")
-    print("Task Location: (" + str(taskX) + "," + str(taskY) + ")")
+  robot_name = 'robot0'
+  try: 
+    timeout = 0.3
+    msg2 = rospy.wait_for_message("/robot0/odom", Odometry, timeout)
+    msg1 = rospy.wait_for_message("/robot0/taskUpdate", RobotTaskUpdate, timeout)
+    
+    
     '''
     manhattanDistance = math.sqrt((X-taskX)**2 + (Y-taskY)**2)
     if (manhattanDistance < .01):
       if len(robotTasks[robot_name]) > 0:
-        robotTasks[msg.robot_name].pop(0)
+        #robotTasks[msg.robot_name].pop(0)
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY)
@@ -180,19 +117,40 @@ def callback2(msg, args):
       else:
         return
     if len(robotPaths[robot_name]) > 0:
-      waypoint = robotPaths[robot_name][0]
+      waypoint = robotPaths[robot_name][2]
+      print('Waypoint: ' + str(waypoint))
     else:
       return
+    
+    '''
+    print(msg1)
+    if msg1.need_path_update:
+      print('DSFJLKDLKFJ:SKL:JDFSLJKDSFJKL')
+      robotPaths[robot_name].pop(0)
+      pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
+      updateMsg = RobotTaskUpdate()
+      updateMsg.robot_name = robot_name
+      updateMsg.need_task_update = False
+      updateMsg.need_path_update = False
+      pub_update.publish(updateMsg)
+      print('New Path:')
+      print('--------')
+      print(robotPaths[robot_name][0])
+
+
+    X = msg2.pose.pose.position.x
+    Y = msg2.pose.pose.position.y
+    taskX = taskLocations[robotTasks[robot_name][0]][0]
+    taskY = taskLocations[robotTasks[robot_name][0]][1]
 
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
-
 
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = "map_static"
     t.header.stamp = rospy.Time.now()
     t.child_frame_id = robot_name + 'goal'
-    t.transform.translation.x = waypoint[0]
-    t.transform.translation.y = waypoint[1]
+    t.transform.translation.x = robotPaths[robot_name][0][0]
+    t.transform.translation.y = robotPaths[robot_name][0][1]
     t.transform.translation.z = 0.0
     t.transform.rotation.x = 0.0
     t.transform.rotation.y = 0.0
@@ -200,23 +158,38 @@ def callback2(msg, args):
     t.transform.rotation.w = 1.0
     tfm = tf2_msgs.msg.TFMessage([t])
 
+    pub0.publish(tfm)
+    r.sleep()
 
+  except Exception as e:
+    print(e)
+    print('publishing initial goal')
+    if (len(robotPaths[robot_name]) == 0):
+      X = 12
+      Y = 10
+      taskX = taskLocations[robotTasks[robot_name][0]][0]
+      taskY = taskLocations[robotTasks[robot_name][0]][1]
+      path = a_star_function(X, Y, taskX, taskY)
+      robotPaths[robot_name] = path
+      robotPaths[robot_name].pop(0)
+
+    pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
+    t = geometry_msgs.msg.TransformStamped()
+    t.header.frame_id = "map_static"
+    t.header.stamp = rospy.Time.now()
+    t.child_frame_id = robot_name + 'goal'
+    t.transform.translation.x = robotPaths[robot_name][0][0]
+    t.transform.translation.y = robotPaths[robot_name][0][1]
+    t.transform.translation.z = 0.0
+    t.transform.rotation.x = 0.0
+    t.transform.rotation.y = 0.0
+    t.transform.rotation.z = 0.0
+    t.transform.rotation.w = 1.0
+    tfm = tf2_msgs.msg.TFMessage([t])
     pub0.publish(tfm)
 
-    global initialize
-    print('hey this was run')
-    initialize = False
-    robotPaths[robot_name].pop(0)
-
     r.sleep()
-    
-
-
-def robot_subscriber(robot_name):
-    sub0 = rospy.Subscriber('/' + robot_name + '/odom', Odometry, callback2, (robot_name))
-
-
-
+    #robotPaths[robot_name].pop(0)
 
 
 #Python's syntax for a main() method

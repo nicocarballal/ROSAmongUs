@@ -15,7 +15,8 @@ import geometry_msgs
 from geometry_msgs.msg import Twist
 from among_us.msg import RobotTaskUpdate
 from visualization_msgs.msg import Marker, MarkerArray
-
+import time
+from time import sleep
 
 #Define the method which contains the main functionality of the node.
 def controller(robot_frame, target_frame):
@@ -58,7 +59,6 @@ def controller(robot_frame, target_frame):
 
       # Process trans to get your state error
       # Generate a control command to send to the robot
-      
       translation_x_error = trans.transform.translation.x * K1
       rotation_error = trans.transform.translation.y 
 
@@ -66,16 +66,12 @@ def controller(robot_frame, target_frame):
       if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
         publish_task_update(robot_frame, False, True)
         
-      
-    
         ### Publish to 'robot_name/task' with need_path_update!
 
       control_command = Twist()
 
       control_command.linear.x = translation_x_error
       control_command.angular.z = rotation_error * -K2
-
-      print(control_command)
 
       #TODO: Generate this
 
@@ -97,9 +93,11 @@ def publish_task_update(robot_name, need_task_update, need_path_update):
     pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
     updateMsg = RobotTaskUpdate()
     updateMsg.robot_name = robot_name
-    updateMsg.need_task_update = False
-    updateMsg.need_path_update = True
+    updateMsg.need_task_update = need_task_update
+    updateMsg.need_path_update = need_path_update
     pub_update.publish(updateMsg)
+    print('published task update!')
+    sleep(1)
 
 # This is Python's sytax for a main() method, which is run by default
 # when exectued in the shell
