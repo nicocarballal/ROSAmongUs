@@ -43,8 +43,8 @@ def controller(robot_frame, target_frame):
   # a 10Hz publishing rate
   r = rospy.Rate(10) # 10hz
 
-  K1 = .3
-  K2 = .3
+  K1 = 0.3
+  K2 = 1
   # Loop until the node is killed with Ctrl-C
 
   keepPath = True
@@ -55,20 +55,18 @@ def controller(robot_frame, target_frame):
     #trans = tfBuffer.lookup_transform('SOURCE FRAME', 'TARGET FRAME', rospy.Time())
     try: 
       trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
-      print('check')
+
       # Process trans to get your state error
       # Generate a control command to send to the robot
-
-      print(trans)
       
       translation_x_error = trans.transform.translation.x * K1
       rotation_error = trans.transform.translation.y 
 
-      '''
-      if abs(translation_x_error) < .01:
+      
+      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
         publish_task_update(robot_frame, False, True)
-        break
-      '''
+        
+      
     
         ### Publish to 'robot_name/task' with need_path_update!
 
@@ -84,7 +82,6 @@ def controller(robot_frame, target_frame):
       #################################### end your code ###############
       pub.publish(control_command)
 
-      print('Check')
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
       print(e)
 

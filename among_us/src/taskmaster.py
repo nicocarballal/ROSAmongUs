@@ -36,7 +36,7 @@ def taskmaster():
       initialize_task_manager()
       create_tasks()
       tf_frames()
-      #task_manager()
+      task_manager()
         
         #task_manager()
 
@@ -98,44 +98,48 @@ def tf_frames():
 
 
 def initialize_task_manager():
-    X = 12
-    Y = 10
-    robot_name = 'robot0'
-    taskX = taskLocations[robotTasks[robot_name][0]][0]
-    taskY = taskLocations[robotTasks[robot_name][0]][1]
-    '''
-    print("Robot Location: (" + str(X) + "," + str(Y) + ")")
-    print("Task Location: (" + str(taskX) + "," + str(taskY) + ")")
-    '''
+    global initialize
+    while (initialize == True):
+      X = 12
+      Y = 10
+      robot_name = 'robot0'
+      taskX = taskLocations[robotTasks[robot_name][0]][0]
+      taskY = taskLocations[robotTasks[robot_name][0]][1]
+      '''
+      print("Robot Location: (" + str(X) + "," + str(Y) + ")")
+      print("Task Location: (" + str(taskX) + "," + str(taskY) + ")")
+      '''
 
-    pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
+      pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
-    path = a_star_function(X, Y, taskX, taskY)
+      path = a_star_function(X, Y, taskX, taskY)
 
-    robotPaths[robot_name] = path
-    #robotTasks[robot_name].pop(0)
+      robotPaths[robot_name] = path
+      #robotTasks[robot_name].pop(0)
 
-    t = geometry_msgs.msg.TransformStamped()
-    t.header.frame_id = "world"
-    t.child_frame_id = robot_name + 'goal'
-    t.header.stamp = rospy.Time.now()
-    
-    t.transform.translation.x = path[1][0]
-    t.transform.translation.y = path[1][1]
-    t.transform.translation.z = 0.0
-    t.transform.rotation.x = 0.0
-    t.transform.rotation.y = 0.0
-    t.transform.rotation.z = 0.0
-    t.transform.rotation.w = 1.0
-    tfm = tf2_msgs.msg.TFMessage([t])
-    pub0.publish(tfm)
-    print('check publish')
-    r.sleep()
+      t = geometry_msgs.msg.TransformStamped()
+      t.header.frame_id = "world"
+      t.child_frame_id = robot_name + 'goal'
+      t.header.stamp = rospy.Time.now()
+      
+      t.transform.translation.x = path[1][0]
+      t.transform.translation.y = path[1][1]
+      t.transform.translation.z = 0.0
+      t.transform.rotation.x = 0.0
+      t.transform.rotation.y = 0.0
+      t.transform.rotation.z = 0.0
+      t.transform.rotation.w = 1.0
+      tfm = tf2_msgs.msg.TFMessage([t])
+      pub0.publish(tfm)
+      r.sleep()
 
 
 def callback(msg):
-
+    global initialize
+    print('hey this was run')
+    initialize = False
     needPathUpdate = msg.need_path_update
+    print(needPathUpdate)
     if (needPathUpdate == True):
       robot_subscriber(msg.robot_name)
     '''
@@ -182,6 +186,7 @@ def callback2(msg, args):
 
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
+
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = "map_static"
     t.header.stamp = rospy.Time.now()
@@ -198,6 +203,9 @@ def callback2(msg, args):
 
     pub0.publish(tfm)
 
+    global initialize
+    print('hey this was run')
+    initialize = False
     robotPaths[robot_name].pop(0)
 
     r.sleep()
@@ -233,7 +241,7 @@ if __name__ == '__main__':
 
     
 
-
+    initialize = True
 
     robotPaths = {"robot0": [], "robot1": [], "robot2": [], "robot3": [], "robot4": [], 
     "robot5": [], "robot6": [], "robot7": []}
