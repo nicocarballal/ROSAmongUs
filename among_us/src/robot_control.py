@@ -16,6 +16,7 @@ from geometry_msgs.msg import Twist
 from among_us.msg import RobotTaskUpdate
 from visualization_msgs.msg import Marker, MarkerArray
 
+
 #Define the method which contains the main functionality of the node.
 def controller(robot_frame, target_frame):
   """
@@ -42,8 +43,8 @@ def controller(robot_frame, target_frame):
   # a 10Hz publishing rate
   r = rospy.Rate(10) # 10hz
 
-  K1 = 0.3
-  K2 = 1
+  K1 = .3
+  K2 = .3
   # Loop until the node is killed with Ctrl-C
 
   keepPath = True
@@ -53,7 +54,7 @@ def controller(robot_frame, target_frame):
     #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
     #trans = tfBuffer.lookup_transform('SOURCE FRAME', 'TARGET FRAME', rospy.Time())
     try: 
-      trans = tfBuffer.lookup_transform(target_frame, robot_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
+      trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
       print('check')
       # Process trans to get your state error
       # Generate a control command to send to the robot
@@ -74,7 +75,7 @@ def controller(robot_frame, target_frame):
       control_command = Twist()
 
       control_command.linear.x = translation_x_error
-      control_command.angular.z = rotation_error * K2
+      control_command.angular.z = rotation_error * -K2
 
       print(control_command)
 
@@ -132,6 +133,6 @@ if __name__ == '__main__':
   rospy.init_node('among_us_controller', anonymous=True)
 
   try:
-    controller('robot0', 'task4')
+    controller('robot0', 'robot0goal')
   except rospy.ROSInterruptException:
     pass

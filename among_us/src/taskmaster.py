@@ -99,7 +99,7 @@ def tf_frames():
 
 def initialize_task_manager():
     X = 12
-    Y = 12
+    Y = 10
     robot_name = 'robot0'
     taskX = taskLocations[robotTasks[robot_name][0]][0]
     taskY = taskLocations[robotTasks[robot_name][0]][1]
@@ -113,15 +113,13 @@ def initialize_task_manager():
     path = a_star_function(X, Y, taskX, taskY)
 
     robotPaths[robot_name] = path
-    robotTasks[robot_name].pop(0)
+    #robotTasks[robot_name].pop(0)
 
-    print('Path next goal') 
-    print(path[1][0], path[1][1])
     t = geometry_msgs.msg.TransformStamped()
-    t.header.frame_id = "map_static"
+    t.header.frame_id = "world"
     t.child_frame_id = robot_name + 'goal'
     t.header.stamp = rospy.Time.now()
-    print(t.child_frame_id)
+    
     t.transform.translation.x = path[1][0]
     t.transform.translation.y = path[1][1]
     t.transform.translation.z = 0.0
