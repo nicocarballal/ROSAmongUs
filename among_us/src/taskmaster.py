@@ -32,14 +32,11 @@ from time import sleep
 
 
 def taskmaster():
-    
-    try:
+    while not rospy.is_shutdown():
       initialize_task_manager()
       create_tasks()
       tf_frames()
-      task_manager()
-    except (rospy.ROSInterruptionException) as e:
-      print(e)
+      #task_manager()
         
         #task_manager()
 
@@ -77,6 +74,7 @@ def create_tasks():
       i = i + 1
     pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=10)
     pub.publish(markerArray)
+    r.sleep()
 
 def tf_frames():
     pub = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=50)
@@ -95,16 +93,14 @@ def tf_frames():
       t.transform.rotation.w = 1.0
       tfm = tf2_msgs.msg.TFMessage([t])
       pub.publish(tfm)
+    r.sleep()
 
 
 
 def initialize_task_manager():
-  
     X = 12
     Y = 12
-
     robot_name = 'robot0'
-    
     taskX = taskLocations[robotTasks[robot_name][0]][0]
     taskY = taskLocations[robotTasks[robot_name][0]][1]
     '''
@@ -136,6 +132,7 @@ def initialize_task_manager():
     tfm = tf2_msgs.msg.TFMessage([t])
     pub0.publish(tfm)
     print('check publish')
+    r.sleep()
 
 
 def callback(msg):
@@ -204,6 +201,8 @@ def callback2(msg, args):
     pub0.publish(tfm)
 
     robotPaths[robot_name].pop(0)
+
+    r.sleep()
     
 
 
@@ -234,6 +233,8 @@ if __name__ == '__main__':
     robot6Tasks = ["task10", "task6", "task1", "task8"]
     robot7Tasks = ["task1", "task4", "task5", "task10"]
 
+    
+
 
 
     robotPaths = {"robot0": [], "robot1": [], "robot2": [], "robot3": [], "robot4": [], 
@@ -243,5 +244,7 @@ if __name__ == '__main__':
     "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks, "robot6": robot6Tasks, "robot7": robot7Tasks}
 
     rospy.init_node('taskmaster', anonymous=True)
+
+    r = rospy.Rate(10) # 10hz
 
     taskmaster()

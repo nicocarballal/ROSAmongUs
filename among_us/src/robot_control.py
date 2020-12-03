@@ -132,6 +132,6 @@ if __name__ == '__main__':
   rospy.init_node('among_us_controller', anonymous=True)
 
   try:
-    controller('robot0', 'robot0goal')
+    controller('robot0', 'task4')
   except rospy.ROSInterruptException:
     pass
