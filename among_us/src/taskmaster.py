@@ -1,5 +1,4 @@
-
-  #!/usr/bin/env python
+ #!/usr/bin/env python
 #The line above tells Linux that this file is a Python script,
 #and that the OS should use the Python interpreter in /usr/bin/env
 #to run it. Don't forget to use "chmod +x [filename]" to make

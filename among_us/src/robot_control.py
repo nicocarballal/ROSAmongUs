@@ -73,12 +73,10 @@ def controller(robot_frame, target_frame):
       t_current = rospy.get_time()
       dt = t_current - t_last
       t_last = t_current
-
       translation_x_error_der = (translation_x_error - last_translation_x_error)/dt
       rotation_error_der = (rotation_error - last_rotation_error)/dt
       print(translation_x_error_der, rotation_error_der)
       print('----------')
-
       '''
 
       last_translation_x_error = translation_x_error
@@ -96,13 +94,25 @@ def controller(robot_frame, target_frame):
 
       control_command = Twist()
 
-      print(rotation_error)
+      
+      max_rotation_speed = .5
+      max_translation_speed = 1
+
 
       if abs(rotation_error) > .2:
-        control_command.angular.z = rotation_error * -K2
+        if abs(rotation_error * -K2) > max_rotation_speed:
+          control_command.angular.z = (-rotation_error)/abs(rotation_error)
+        else:
+          control_command.angular.z = rotation_error * -K2
       else:
-        control_command.linear.x = translation_x_error * K1 
-        control_command.angular.z = rotation_error * -K2
+        if abs(rotation_error * -K2) > max_rotation_speed:
+          control_command.angular.z = (-rotation_error)/abs(rotation_error)
+        else:
+          control_command.angular.z = rotation_error * -K2
+        if abs(translation_x_error * K1) > max_translation_speed:
+          control_command.linear.x = translation_x_error/abs(translation_x_error)
+        else:
+          control_command.linear.x = translation_x_error * K1 
       
 
 
