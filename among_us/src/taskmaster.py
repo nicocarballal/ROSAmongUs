@@ -139,6 +139,8 @@ def task_manager():
       elif len(robotTasks[robot_name]) > 0:
         X = msg2.pose.pose.position.x
         Y = msg2.pose.pose.position.y
+        X = round(X*4)/4
+        Y = round(Y*4)/4
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY)
@@ -148,7 +150,8 @@ def task_manager():
       else:
         ## don't want the controller to go anywhere new
         return
-
+    if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
+      return 
 
 
     X = msg2.pose.pose.position.x
@@ -189,12 +192,19 @@ def task_manager():
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
         X = msg2.pose.pose.position.x
         Y = msg2.pose.pose.position.y
+        X = round(X*4)/4
+        Y = round(Y*4)/4
+        print(X)
+        print(Y)
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY)
         robotPaths[robot_name] = path
         robotPaths[robot_name].pop(0)
         robotTasks[robot_name].pop(0)
+
+    if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
+      return 
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = "map_static"

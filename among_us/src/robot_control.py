@@ -86,6 +86,7 @@ def controller(robot_frame, target_frame):
 
       if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
         publish_task_update(robot_frame, False, True)
+        control_command = Twist()
         control_command.linear.x = 0
         control_command.angular.z = 0
         

@@ -145,7 +145,7 @@ class OccupancyGridMap:
         """
         x_index, y_index = point_idx
         l = 5
-        for d in range(1, 9):
+        for d in range(1, l):
             x_left = (x_index - d, y_index)
             x_down = (x_index, y_index - d)
             x_right = (x_index + d, y_index)
