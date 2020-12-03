@@ -45,7 +45,7 @@ def controller(robot_frame, target_frame):
   r = rospy.Rate(10) # 10hz
 
   K1 = 0.3
-  K2 = 1
+  K2 = 1.5
   # Loop until the node is killed with Ctrl-C
 
   keepPath = True

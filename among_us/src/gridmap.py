@@ -144,7 +144,7 @@ class OccupancyGridMap:
         :return: True if the given point is occupied, false otherwise
         """
         x_index, y_index = point_idx
-        d = 5
+        d = 8
         x_left = (x_index - d, y_index)
         x_down = (x_index, y_index - d)
         x_right = (x_index + d, y_index)
