@@ -61,7 +61,6 @@ def controller(robot_frame, target_frame):
       # Generate a control command to send to the robot
       translation_x_error = trans.transform.translation.x * K1
       rotation_error = trans.transform.translation.y 
-
       
       if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
         publish_task_update(robot_frame, False, True)
