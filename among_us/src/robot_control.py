@@ -17,7 +17,7 @@ from among_us.msg import RobotTaskUpdate
 from visualization_msgs.msg import Marker, MarkerArray
 
 #Define the method which contains the main functionality of the node.
-def callback(msg, args):
+def controller(robot_frame, target_frame):
   """
   Controls a robot whose position is denoted by robot_frame,
   to go to a position denoted by target_frame
@@ -31,35 +31,12 @@ def callback(msg, args):
   #Create a publisher and a tf buffer, which is primed with a tf listener
   #TODO: replace 'INPUT TOPIC' with the correct name for the ROS topic on which
   # the robot accepts velocity inputs.
-  print("CALLBACK")
-  print("CALLBACK")
-  print("CALLBACK")
-  robot_name = args[0]
-  task_name = args[1]
-  tfBuffer = args[2]
-  tfListener = args[3]
 
-  X = 12
-  Y = 12
+  tfBuffer = tf2_ros.Buffer()
+  tfListener = tf2_ros.TransformListener(tfBuffer)
 
-
-  pub = rospy.Publisher(robot_name + '/cmd_vel', Twist, queue_size=10)
-
-  pubtf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
-
-  t = geometry_msgs.msg.TransformStamped()
-  t.header.frame_id = "map_static"
-  t.header.stamp = rospy.Time.now()
-  t.child_frame_id = robot_name + 'goal'
-  t.transform.translation.x = X
-  t.transform.translation.y = Y
-  t.transform.translation.z = 0.0
-  t.transform.rotation.x = 0.0
-  t.transform.rotation.y = 0.0
-  t.transform.rotation.z = 0.0
-  t.transform.rotation.w = 1.0
-  tfm = tf2_msgs.msg.TFMessage([t])
-  pubtf.publish(tfm)
+  pub = rospy.Publisher(robot_frame + '/cmd_vel', Twist, queue_size=10)
+  
   
   # Create a timer object that will sleep long enough to result in
   # a 10Hz publishing rate
@@ -71,57 +48,51 @@ def callback(msg, args):
 
   keepPath = True
 
-  while keepPath == True:
-    try:
+  while not rospy.is_shutdown():
     
-      #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
-      print('try')
-      trans = tfBuffer.lookup_transform(robot_name, t.child_frame_id, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
+    #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
+    #trans = tfBuffer.lookup_transform('SOURCE FRAME', 'TARGET FRAME', rospy.Time())
+    try: 
+      trans = tfBuffer.lookup_transform(target_frame, robot_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
+      print('check')
       # Process trans to get your state error
       # Generate a control command to send to the robot
-      translation_error = trans.transform.translation.x * K1
+
+      print(trans)
+      
+      translation_x_error = trans.transform.translation.x * K1
       rotation_error = trans.transform.translation.y 
 
-      print(translation_error)
-
-      if (translation_error) < .01:
-        pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
-        updateMsg = RobotTaskUpdate()
-        updateMsg.robot_name = robot_name
-        updateMsg.need_task_update = False
-        updateMsg.need_path_update = True
-        pub_update.publish(updateMsg)
-        keepPath = False
+      '''
+      if abs(translation_x_error) < .01:
+        publish_task_update(robot_frame, False, True)
+        break
+      '''
+    
         ### Publish to 'robot_name/task' with need_path_update!
 
       control_command = Twist()
-      control_command.linear.x = translation_error
-      control_command.angular.z = rotation_error * -K2
+
+      control_command.linear.x = translation_x_error
+      control_command.angular.z = rotation_error * K2
+
+      print(control_command)
 
       #TODO: Generate this
 
       #################################### end your code ###############
-
-      print(control_command)
-
       pub.publish(control_command)
+
+      print('Check')
+    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+      print(e)
+
+
+  
+    # Use our rate object to sleep until it is time to publish again
+    r.sleep()
     
-      # Use our rate object to sleep until it is time to publish again
-      r.sleep()
-    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-      break
-
-
-
-def create_subscribers():
-    tfBuffer = tf2_ros.Buffer()
-    tfListener = tf2_ros.TransformListener(tfBuffer)
-    sub0 = rospy.Subscriber('/tf', tf2_msgs.msg.TFMessage, callback, ('robot0', 'task0', tfBuffer, tfListener))
-    rospy.spin()
-
-
-def callback_holder():
-    pass
+      
 
 
 def publish_task_update(robot_name, need_task_update, need_path_update):
@@ -130,7 +101,6 @@ def publish_task_update(robot_name, need_task_update, need_path_update):
     updateMsg.robot_name = robot_name
     updateMsg.need_task_update = False
     updateMsg.need_path_update = True
-    print('hey')
     pub_update.publish(updateMsg)
 
 # This is Python's sytax for a main() method, which is run by default
@@ -161,5 +131,7 @@ if __name__ == '__main__':
 
   rospy.init_node('among_us_controller', anonymous=True)
 
-  create_subscribers()
-
+  try:
+    controller('robot0', 'robot0goal')
+  except rospy.ROSInterruptException:
+    pass
