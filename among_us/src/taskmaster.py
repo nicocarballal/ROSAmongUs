@@ -114,8 +114,10 @@ def task_manager(robot_name):
 
   except Exception as e:
     if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
-      X = 12 
-      Y = 10 ##Needs to be changed
+      X = msg2.pose.pose.position.x
+      Y = msg2.pose.pose.position.y
+      X = round(X*4)/4
+      Y = round(Y*4)/4
       taskX = taskLocations[robotTasks[robot_name][0]][0]
       taskY = taskLocations[robotTasks[robot_name][0]][1]
       path = a_star_function(X, Y, taskX, taskY)

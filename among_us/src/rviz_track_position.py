@@ -81,7 +81,8 @@ def listener():
 if __name__ == '__main__':
     print("RVIZ Robot Tracking Initiated")
     robotArray = ["robot0", "robot1", "robot2", "robot3", "robot4", "robot5", "robot6", "robot7"]
-    colorArray= [[1, .5, .5, .5], [1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1], [1,0.5,1,0.5], [1,1,0.5,0.5], [1,1,0.7,0], [1,0.7,0.5,0.5]]
+    colorArray= [[1, 0, 0, .7], [1, .1, 1, .1], [1, 0, 0, 0], [1, .2, 1, 1], [1,0.9,0,0], [1,.1,0.5,0.1], [1,0.8,0.3,0.8], [1,0.4,0.2,0]]
+
     markerArray = MarkerArray()
     #Run this program as a new node in the ROS computation graph
     #called /listener_<id>, where <id> is a randomly generated numeric

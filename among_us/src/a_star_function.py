@@ -53,6 +53,7 @@ def a_star_function(X, Y, taskX, taskY):
         plt.plot(goal_node_px[0], goal_node_px[1], 'go')
 
     plt.show()
+    
     '''
     
     path = path_cleaner(path)
