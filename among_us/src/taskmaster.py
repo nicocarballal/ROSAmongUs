@@ -114,8 +114,8 @@ def task_manager(robot_name):
 
   except Exception as e:
     if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
-      X = 12
-      Y = 10
+      X = 12 
+      Y = 10 ##Needs to be changed
       taskX = taskLocations[robotTasks[robot_name][0]][0]
       taskY = taskLocations[robotTasks[robot_name][0]][1]
       path = a_star_function(X, Y, taskX, taskY)
@@ -164,7 +164,8 @@ if __name__ == '__main__':
     #name, which ROS doesn't allow.
     print("Taskmaster initiated.")
     taskLocations = {"task1": (12, 12), "task2": (8, 5), "task3": (12, 1), "task4": (15,1), "task5": (1,6.5), 
-    "task6": (9, 6.5), "task7": (15.5, 5), "task8": (15.5, 8.5), "task9": (22, 7), "task10": (18,10)}
+    "task6": (9, 7.5), "task7": (15.5, 5), "task8": (16, 8), "task9": (22, 7), "task10": (18,10)}
+
 
     robot0Tasks = ["task1", "task7", "task4", "task3"]
     robot1Tasks = ["task5", "task3", "task2", "task9"]

@@ -70,9 +70,6 @@ def controller(robot_frame, target_frame):
       # Generate a control command to send to the robot
       translation_x_error = trans.transform.translation.x
       rotation_error = trans.transform.translation.y 
-      if (robot_frame == 'robot0'):
-        print(trans)
-        print(rotation_error * -K2)
       '''
       t_current = rospy.get_time()
       dt = t_current - t_last
@@ -99,23 +96,23 @@ def controller(robot_frame, target_frame):
       control_command = Twist()
 
       
-      max_rotation_speed = .3
-      max_translation_speed = 1
+      max_rotation_speed = .4
+      max_translation_speed = 2
 
 
 
       if abs(rotation_error) > .2:
         if abs(rotation_error * -K2) > max_rotation_speed:
-          control_command.angular.z = (-rotation_error)/abs(rotation_error)
+          control_command.angular.z = max_rotation_speed * (-rotation_error)/abs(rotation_error)
         else:
           control_command.angular.z = rotation_error * -K2
       else:
         if abs(rotation_error * -K2) > max_rotation_speed:
-          control_command.angular.z = (-rotation_error)/abs(rotation_error)
+          control_command.angular.z = max_translation_speed * (-rotation_error)/abs(rotation_error)
         else:
           control_command.angular.z = rotation_error * -K2
         if abs(translation_x_error * K1) > max_translation_speed:
-          control_command.linear.x = translation_x_error/abs(translation_x_error)
+          control_command.linear.x = max_translation_speed* translation_x_error/abs(translation_x_error)
         else:
           control_command.linear.x = translation_x_error * K1 
       
@@ -132,7 +129,7 @@ def controller(robot_frame, target_frame):
       pub.publish(control_command)
 
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-      print(e)
+      pass
 
 
   
@@ -149,7 +146,6 @@ def publish_task_update(robot_name, need_task_update, need_path_update):
     updateMsg.need_task_update = need_task_update
     updateMsg.need_path_update = need_path_update
     pub_update.publish(updateMsg)
-    print('published task update!')
     sleep(1)
 
 # This is Python's sytax for a main() method, which is run by default
@@ -178,7 +174,6 @@ if __name__ == '__main__':
 
   rospy.init_node('among_us_controller', anonymous=True)
 
-  print('robotname!')
   robot_name = sys.argv[1]
   print(robot_name)
 

@@ -7,19 +7,19 @@ echo -e "Load in the robots: "
 
 #roslaunch stdr_launchers among_us.launch x:=10 y:=10
 
+rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 13 11 0
+
 rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 12 10 0
-
-rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 11 9 0
-
-rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 12 8 0
-
-rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 11 11 0
 
 rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 13 8 0
 
-rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 12 9 0
+rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 12 11 0
 
-rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 11 10 0
+rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 14 8 0
+
+rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 13 9 0
+
+rosrun stdr_robot robot_handler add ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots/among_us1.yaml 12 11 0
 
 
 ## Can uncomment below to track robot position with markers automatically in RVIZ
