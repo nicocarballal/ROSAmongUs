@@ -1,0 +1,9 @@
+<launch>
+	<param name="use_sim_time" value="true"/>
+	<node pkg="gmapping" type="slam_gmapping" name="slam2" output="screen">
+		<remap from="scan" to="/robot2/laser_0"/>
+		<param name="base_frame" value="/robot2"/>
+		<remap from="map" to="/robot2/map"/>
+		<remap from="map_metadata" to="/robot2/metadata"/>
+	</node>
+</launch>
