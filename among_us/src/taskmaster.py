@@ -31,77 +31,17 @@ from time import sleep
 
 
 def taskmaster():
-    c = True 
+    robot_name = sys.argv[1]
+    print(robot_name)
     while not rospy.is_shutdown():
-      create_tasks()
-      tf_frames()
-      task_manager()
-      
-      
-        
-        #task_manager()
+      task_manager(robot_name)
+      #task_manager('robot2')
 
-
-
-## Creates one task currently and publishes it to RVIZ
-def create_tasks():
-    markerArray = MarkerArray()
-    i = 1
-    for key in taskLocations:
-
-      marker = Marker()
-      marker.header.frame_id = "world"
-      marker.ns = "my_namespace"
-      marker.id = i 
-      marker.type = marker.CYLINDER
-      marker.action = marker.ADD
-      marker.pose.position.x = taskLocations[key][0]
-      marker.pose.position.y = taskLocations[key][1]
-      marker.pose.position.z = 0
-      marker.pose.orientation.x = 0
-      marker.pose.orientation.y = 0
-      marker.pose.orientation.z = 0
-      marker.pose.orientation.w = 0
-      marker.scale.x = 0.5
-      marker.scale.y = 0.5
-      marker.scale.z = 0.5
-      marker.color.a = 1
-      marker.color.r = 1
-      marker.color.g = 1
-      marker.color.b = 0
-      marker.lifetime.secs = 1000
-      marker.lifetime.nsecs = 1000
-      markerArray.markers.append(marker)
-      i = i + 1
-    pub = rospy.Publisher('/tasks/markers', MarkerArray, queue_size=10)
-    pub.publish(markerArray)
-    r.sleep()
-
-def tf_frames():
-    pub = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=50)
-
-    for key in taskLocations:
-      t = geometry_msgs.msg.TransformStamped()
-      t.header.frame_id = "map_static"
-      t.header.stamp = rospy.Time.now()
-      t.child_frame_id = key
-      t.transform.translation.x = taskLocations[key][0]
-      t.transform.translation.y = taskLocations[key][1]
-      t.transform.translation.z = 0.0
-      t.transform.rotation.x = 0.0
-      t.transform.rotation.y = 0.0
-      t.transform.rotation.z = 0.0
-      t.transform.rotation.w = 1.0
-      tfm = tf2_msgs.msg.TFMessage([t])
-      pub.publish(tfm)
-    r.sleep()
-
-def task_manager():
-  robot_name = 'robot0'
+def task_manager(robot_name):
   try: 
-    timeout = 0.3
-    msg2 = rospy.wait_for_message("/robot0/odom", Odometry, timeout)
-    msg1 = rospy.wait_for_message("/robot0/taskUpdate", RobotTaskUpdate, timeout)
+    timeout = 1
+    msg2 = rospy.wait_for_message("/" + robot_name + "/odom", Odometry, timeout)
+    msg1 = rospy.wait_for_message("/" + robot_name + "/taskUpdate", RobotTaskUpdate, timeout)
     
     
     '''
@@ -122,7 +62,6 @@ def task_manager():
       return
     
     '''
-    print(msg1)
     if msg1.need_path_update:
       if len(robotPaths[robot_name]) > 0:
         robotPaths[robot_name].pop(0)
@@ -132,9 +71,6 @@ def task_manager():
         updateMsg.need_task_update = False
         updateMsg.need_path_update = False
         pub_update.publish(updateMsg)
-        print('New Path:')
-        print('--------')
-        print(robotPaths[robot_name][0])
       elif len(robotTasks[robot_name]) > 0:
         X = msg2.pose.pose.position.x
         Y = msg2.pose.pose.position.y
@@ -177,8 +113,6 @@ def task_manager():
     r.sleep()
 
   except Exception as e:
-    print(e)
-    print('publishing initial goal')
     if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
       X = 12
       Y = 10
@@ -193,8 +127,6 @@ def task_manager():
         Y = msg2.pose.pose.position.y
         X = round(X*4)/4
         Y = round(Y*4)/4
-        print(X)
-        print(Y)
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY)
@@ -236,14 +168,12 @@ if __name__ == '__main__':
 
     robot0Tasks = ["task1", "task7", "task4", "task3"]
     robot1Tasks = ["task5", "task3", "task2", "task9"]
-    robot2Tasks = ["task6", "task5", "task10", "task1"]
+    robot2Tasks = ["task7", "task5", "task10", "task1"]
     robot3Tasks = ["task7", "task1", "task2", "task4"]
     robot4Tasks = ["task8", "task9", "task4", "task2"]
     robot5Tasks = ["task9", "task8", "task3", "task6"]
     robot6Tasks = ["task10", "task6", "task1", "task8"]
     robot7Tasks = ["task1", "task4", "task5", "task10"]
-
-    
 
     initialize = True
 

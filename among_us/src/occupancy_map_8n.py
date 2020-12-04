@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
 
     # set a start and an end node (in meters)
-    start_node = (15, 12) ##AMONG US: Where we are
+    start_node = (12, 12) ##AMONG US: Where we are
     goal_node = (8, 5) ##AMONG US: Where the task is :)
 
     # run A*

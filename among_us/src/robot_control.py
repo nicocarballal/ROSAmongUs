@@ -44,8 +44,8 @@ def controller(robot_frame, target_frame):
   # a 10Hz publishing rate
   r = rospy.Rate(10) # 10hz
 
-  K1 = .5
-  K2 = .8
+  K1 = .3
+  K2 = .3
   K1d = .1
   K2d = .1
   # Loop until the node is killed with Ctrl-C
@@ -64,11 +64,15 @@ def controller(robot_frame, target_frame):
     try: 
       trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
 
+
+
       # Process trans to get your state error
       # Generate a control command to send to the robot
       translation_x_error = trans.transform.translation.x
       rotation_error = trans.transform.translation.y 
-
+      if (robot_frame == 'robot0'):
+        print(trans)
+        print(rotation_error * -K2)
       '''
       t_current = rospy.get_time()
       dt = t_current - t_last
@@ -95,8 +99,9 @@ def controller(robot_frame, target_frame):
       control_command = Twist()
 
       
-      max_rotation_speed = .5
+      max_rotation_speed = .3
       max_translation_speed = 1
+
 
 
       if abs(rotation_error) > .2:
@@ -173,7 +178,11 @@ if __name__ == '__main__':
 
   rospy.init_node('among_us_controller', anonymous=True)
 
+  print('robotname!')
+  robot_name = sys.argv[1]
+  print(robot_name)
+
   try:
-    controller('robot0', 'robot0goal')
+    controller(robot_name, robot_name + 'goal')
   except rospy.ROSInterruptException:
     pass
