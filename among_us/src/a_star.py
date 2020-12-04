@@ -1,6 +1,7 @@
 import math
 from heapq import heappush, heappop
 from utils import dist2d
+import numpy as np
 
 
 def _get_movements_4n():
@@ -57,7 +58,9 @@ def a_star(start_m, goal_m, gmap, movement='8N', occupancy_cost_factor=3):
     # add start node to front
     # front is a list of (total estimated cost to goal, total cost from start to node, node, previous node)
     start_node_cost = 0
-    start_node_estimated_cost_to_goal = dist2d(start, goal) + start_node_cost
+    print("Start X:"+ str(start_m[0]))
+    print("Goal X:" + str(goal_m[0]))
+    start_node_estimated_cost_to_goal = dist2d(start, goal) + start_node_cost #+ 10*(start_m[0]-goal_m[0]) + 10*(start_m[1]-goal_m[1])
     front = [(start_node_estimated_cost_to_goal, start_node_cost, start, None)]
 
     # use a dictionary to remember where we came from in order to reconstruct the path later on
@@ -106,7 +109,13 @@ def a_star(start_m, goal_m, gmap, movement='8N', occupancy_cost_factor=3):
             # add node to front if it was not visited before and is not an obstacle
             if (not gmap.is_visited_idx(new_pos)) and (not gmap.is_occupied_idx(new_pos)):
                 potential_function_cost = gmap.get_data_idx(new_pos)*occupancy_cost_factor
-                new_cost = cost + deltacost + potential_function_cost
+                new_cost = cost + deltacost + potential_function_cost #+ abs(10*dx) + abs(10*dy)#+10*(new_y-goal_m[1])+10*(new_x-goal_m[0])
+                if came_from[pos]:
+                    if came_from[pos][0] == pos[0]:
+                        new_cost += abs(10*dx)
+                    else:
+                        new_cost += abs(10*dy)
+
                 new_total_cost_to_goal = new_cost + dist2d(new_pos, goal) + potential_function_cost
 
                 heappush(front, (new_total_cost_to_goal, new_cost, new_pos, pos))
