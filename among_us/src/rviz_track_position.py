@@ -52,7 +52,6 @@ def callback(message):
 
   pub = rospy.Publisher('/stdr_server/sources_visualization_markers', MarkerArray, queue_size=10)
 
-  sleep(.1)
   pub.publish(markerArray)
 
 
