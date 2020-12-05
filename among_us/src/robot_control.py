@@ -96,7 +96,7 @@ def controller(robot_frame, target_frame):
       control_command = Twist()
 
       
-      max_rotation_speed = .4
+      max_rotation_speed = .3
       max_translation_speed = 2
 
 

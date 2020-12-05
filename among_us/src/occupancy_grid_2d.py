@@ -17,17 +17,12 @@ import numpy as np
 import math
 
 class OccupancyGrid2d(object):
-    def __init__(self, fixed_frame, sensor_frame, sensor_topic, vis_topic):
+    def __init__(self):
         self._intialized = False
 
         # Set up tf buffer and listener.
         self._tf_buffer = tf2_ros.Buffer()
         self._tf_listener = tf2_ros.TransformListener(self._tf_buffer)
-
-        self.fixed_frame = rospy.get_param(fixed_frame)
-        self.sensor_frame = rospy.get_param(sensor_frame)
-        self.sensor_topic = rospy.get_param(sensor_topic)
-        self.vis_topic = rospy.get_param(vis_topic)
 
     # Initialization and loading parameters.
     def Initialize(self):
@@ -57,15 +52,27 @@ class OccupancyGrid2d(object):
 
         # Dimensions and bounds.
         # TODO! You'll need to set values for class variables called:
+        if not rospy.has_param("~x/num"):
+            return False
         self._x_num = rospy.get_param("~x/num")
+        if not rospy.has_param("~x/min"):
+            return False
         self._x_min = rospy.get_param("~x/min")
+        if not rospy.has_param("~x/max"):
+            return False
         self._x_max = rospy.get_param("~x/max")
-        self._x_res = (self._x_max - self._x_min)/self._x_num
+        if not rospy.has_param("~y/num"):
+            return False
         self._y_num = rospy.get_param("~y/num")
+        if not rospy.has_param("~y/min"):
+            return False
         self._y_min = rospy.get_param("~y/min")
+        if not rospy.has_param("~y/max"):
+            return False
         self._y_max = rospy.get_param("~y/max")
-        self._y_res = (self._y_max - self._y_min)/self._y_num
-
+        self._x_res = float((self._x_max-self._x_min)/float(self._x_num))
+        self._y_res = float((self._y_max-self._y_min)/float(self._y_num))
+        
         # Update parameters.
         if not rospy.has_param("~update/occupied"):
             return False
@@ -89,22 +96,117 @@ class OccupancyGrid2d(object):
 
         # Topics.
         # TODO! You'll need to set values for class variables called:
-        self._sensor_topic = self.sensor_topic
-        self._vis_topic = self.vis_topic
+        if not rospy.has_param("~topics/sensor0"):
+            return False
+        self._sensor0_topic = rospy.get_param("~topics/sensor0")
+
+        if not rospy.has_param("~topics/sensor1"):
+            return False
+        self._sensor1_topic = rospy.get_param("~topics/sensor1")
+
+        if not rospy.has_param("~topics/sensor2"):
+            return False
+        self._sensor2_topic = rospy.get_param("~topics/sensor2")
+
+        if not rospy.has_param("~topics/sensor3"):
+            return False
+        self._sensor3_topic = rospy.get_param("~topics/sensor3")
+
+        if not rospy.has_param("~topics/sensor4"):
+            return False
+        self._sensor4_topic = rospy.get_param("~topics/sensor4")
+
+        if not rospy.has_param("~topics/sensor5"):
+            return False
+        self._sensor5_topic = rospy.get_param("~topics/sensor5")
+
+        if not rospy.has_param("~topics/sensor6"):
+            return False
+        self._sensor6_topic = rospy.get_param("~topics/sensor6")
+
+        if not rospy.has_param("~topics/sensor7"):
+            return False
+        self._sensor7_topic = rospy.get_param("~topics/sensor7")
+
+        if not rospy.has_param("~topics/vis"):
+            return False
+        self._vis_topic = rospy.get_param("~topics/vis")
 
         # Frames.
         # TODO! You'll need to set values for class variables called:
-        self._sensor_frame = self.sensor_frame
-        self._fixed_frame = self.fixed_frame
+        if not rospy.has_param("~frames/sensor0"):
+            return False
+        self._sensor0_frame = rospy.get_param("~frames/sensor0")
+
+        if not rospy.has_param("~frames/sensor1"):
+            return False
+        self._sensor1_frame = rospy.get_param("~frames/sensor1")
+
+        if not rospy.has_param("~frames/sensor2"):
+            return False
+        self._sensor2_frame = rospy.get_param("~frames/sensor2")
+
+        if not rospy.has_param("~frames/sensor3"):
+            return False
+        self._sensor3_frame = rospy.get_param("~frames/sensor3")
+
+        if not rospy.has_param("~frames/sensor4"):
+            return False
+        self._sensor4_frame = rospy.get_param("~frames/sensor4")
+
+        if not rospy.has_param("~frames/sensor5"):
+            return False
+        self._sensor5_frame = rospy.get_param("~frames/sensor5")
+
+        if not rospy.has_param("~frames/sensor6"):
+            return False
+        self._sensor6_frame = rospy.get_param("~frames/sensor6")
+
+        if not rospy.has_param("~frames/sensor7"):
+            return False
+        self._sensor7_frame = rospy.get_param("~frames/sensor7")
+
+        if not rospy.has_param("~frames/fixed"):
+            return False
+        self._fixed_frame = rospy.get_param("~frames/fixed")
 
         return True
 
     def RegisterCallbacks(self):
         # Subscriber.
-        self._sensor_sub = rospy.Subscriber(self._sensor_topic,
+        self._sensor0_sub = rospy.Subscriber(self._sensor0_topic,
                                             LaserScan,
-                                            self.SensorCallback,
+                                            self.SensorCallback, (self._sensor0_frame),
                                             queue_size=1)
+        self._sensor1_sub = rospy.Subscriber(self._sensor1_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor1_frame),
+                                            queue_size=1)
+        self._sensor2_sub = rospy.Subscriber(self._sensor2_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor2_frame),
+                                            queue_size=1)
+        self._sensor3_sub = rospy.Subscriber(self._sensor3_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor3_frame),
+                                            queue_size=1)
+        self._sensor4_sub = rospy.Subscriber(self._sensor4_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor4_frame),
+                                            queue_size=1)
+        self._sensor5_sub = rospy.Subscriber(self._sensor5_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor5_frame),
+                                            queue_size=1)
+        self._sensor6_sub = rospy.Subscriber(self._sensor6_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor6_frame),
+                                            queue_size=1)
+        self._sensor7_sub = rospy.Subscriber(self._sensor7_topic,
+                                            LaserScan,
+                                            self.SensorCallback, (self._sensor7_frame),
+                                            queue_size=1)
+
 
         # Publisher.
         self._vis_pub = rospy.Publisher(self._vis_topic,
@@ -114,7 +216,9 @@ class OccupancyGrid2d(object):
         return True
 
     # Callback to process sensor measurements.
-    def SensorCallback(self, msg):
+    def SensorCallback(self, msg, args):
+        sensor_frame = args
+        print(sensor_frame)
         if not self._initialized:
             rospy.logerr("%s: Was not initialized.", self._name)
             return
@@ -122,7 +226,8 @@ class OccupancyGrid2d(object):
         # Get our current pose from TF.
         try:
             pose = self._tf_buffer.lookup_transform(
-                self._fixed_frame, self._sensor_frame, rospy.Time())
+                self._fixed_frame, sensor_frame, rospy.Time())
+            print(pose)
         except (tf2_ros.LookupException,
                 tf2_ros.ConnectivityException,
                 tf2_ros.ExtrapolationException):
@@ -144,8 +249,6 @@ class OccupancyGrid2d(object):
             rospy.logwarn("%s: Turtlebot roll/pitch is too large.", self._name)
 
         # Loop over all ranges in the LaserScan.
-        length = len(msg.ranges)
-
         for idx, r in enumerate(msg.ranges):
             
             # Randomly throw out some rays to speed this up.
@@ -158,45 +261,30 @@ class OccupancyGrid2d(object):
             # TODO!
             angle = msg.angle_min + idx * msg.angle_increment
 
+            far = False
             # Throw out this point if it is too close or too far away.
-            '''
             if r > msg.range_max:
-                rospy.logwarn("%s: Range %f > %f was too large.",
-                              self._name, r, msg.range_max)
-            '''
+                far = True
+                r = msg.range_max
             if r < msg.range_min:
                 rospy.logwarn("%s: Range %f < %f was too small.",
                               self._name, r, msg.range_min)
 
                 continue
-
-            if r > msg.range_max:
-                r = msg.range_max
-        
-            for i in np.arange(0, r + self._x_res, self._x_res):
-                if (i >= msg.range_max):
-                    break
+       
+            for i in np.arange(0, r +self._x_res, self._x_res):
                 x = sensor_x + i * math.cos(yaw + angle)
                 y = sensor_y + i * math.sin(yaw + angle)
                 (idx_x, idx_y) = self.PointToVoxel(x, y)
 
 
                 
-                if (i >= r) and (self._map[idx_x][idx_y] < self._occupied_threshold):
+                if far != True and (i >= r) and (self._map[idx_x][idx_y] < self._occupied_threshold) :
                     self._map[idx_x][idx_y] = self._map[idx_x][idx_y] + self._occupied_update
                 elif (i < r) and (self._map[idx_x][idx_y] > self._free_threshold):
                     self._map[idx_x][idx_y] = self._map[idx_x][idx_y] + self._free_update
-
-
-
-                
-                
-
-
-                
-                
-                
-
+                else:
+                    self._map[idx_x][idx_y] = self._map[idx_x][idx_y] + self._free_update
             # Walk along this ray from the scan point to the sensor.
             # Update log-odds at each voxel along the way.
             # Only update each voxel once. 
@@ -206,6 +294,9 @@ class OccupancyGrid2d(object):
         # Visualize.
         self.Visualize()
 
+
+
+    
     # Convert (x, y) coordinates in fixed frame to grid coordinates.
     def PointToVoxel(self, x, y):
         grid_x = int((x - self._x_min) / self._x_res)

@@ -12,7 +12,7 @@ python among_us/src/taskmaster.py robot5 &
 python among_us/src/taskmaster.py robot6 &
 python among_us/src/taskmaster.py robot7 &
 roslaunch stdr_launchers among_rviz.launch &
-roslaunch among_us occupancy_grid.launch &
+roslaunch among_us occupancy_grid_combined.launch &
 python among_us/src/robot_control.py robot0 &
 python among_us/src/robot_control.py robot1 &
 python among_us/src/robot_control.py robot2 & 
@@ -20,5 +20,5 @@ python among_us/src/robot_control.py robot3 &
 python among_us/src/robot_control.py robot4 &
 python among_us/src/robot_control.py robot5 &
 python among_us/src/robot_control.py robot6 &
-python among_us/src/robot_control.py robot7
+python among_us/src/robot_control.py robot7 &
 #python among_us/src/robot_control1.py &
