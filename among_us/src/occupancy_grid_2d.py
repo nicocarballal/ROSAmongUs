@@ -11,7 +11,11 @@ import tf
 from sensor_msgs.msg import LaserScan
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point
-from std_msgs.msg import ColorRGBA
+from std_msgs.msg import ColorRGBA, Float32
+from nav_msgs.msg import OccupancyGrid
+from among_us.msg import OccupancyGridUpdate
+
+
 
 import numpy as np
 import math
@@ -176,35 +180,35 @@ class OccupancyGrid2d(object):
         # Subscriber.
         self._sensor0_sub = rospy.Subscriber(self._sensor0_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor0_frame),
+                                            self.SensorCallback, (self._sensor0_frame, 'robot0'),
                                             queue_size=1)
         self._sensor1_sub = rospy.Subscriber(self._sensor1_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor1_frame),
+                                            self.SensorCallback, (self._sensor1_frame, 'robot1'),
                                             queue_size=1)
         self._sensor2_sub = rospy.Subscriber(self._sensor2_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor2_frame),
+                                            self.SensorCallback, (self._sensor2_frame, 'robot2'),
                                             queue_size=1)
         self._sensor3_sub = rospy.Subscriber(self._sensor3_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor3_frame),
+                                            self.SensorCallback, (self._sensor3_frame, 'robot3'),
                                             queue_size=1)
         self._sensor4_sub = rospy.Subscriber(self._sensor4_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor4_frame),
+                                            self.SensorCallback, (self._sensor4_frame, 'robot4'),
                                             queue_size=1)
         self._sensor5_sub = rospy.Subscriber(self._sensor5_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor5_frame),
+                                            self.SensorCallback, (self._sensor5_frame, 'robot5'),
                                             queue_size=1)
         self._sensor6_sub = rospy.Subscriber(self._sensor6_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor6_frame),
+                                            self.SensorCallback, (self._sensor6_frame, 'robot6'),
                                             queue_size=1)
         self._sensor7_sub = rospy.Subscriber(self._sensor7_topic,
                                             LaserScan,
-                                            self.SensorCallback, (self._sensor7_frame),
+                                            self.SensorCallback, (self._sensor7_frame, 'robot7'),
                                             queue_size=1)
 
 
@@ -213,12 +217,14 @@ class OccupancyGrid2d(object):
                                         Marker,
                                         queue_size=10)
 
+        self._grid_pub = rospy.Publisher('map/occupancy_grid', OccupancyGridUpdate, queue_size = 1)
         return True
 
     # Callback to process sensor measurements.
     def SensorCallback(self, msg, args):
-        sensor_frame = args
-        print(sensor_frame)
+        sensor_frame = args[0]
+        robot_name = args[1]
+
         if not self._initialized:
             rospy.logerr("%s: Was not initialized.", self._name)
             return
@@ -227,7 +233,7 @@ class OccupancyGrid2d(object):
         try:
             pose = self._tf_buffer.lookup_transform(
                 self._fixed_frame, sensor_frame, rospy.Time())
-            print(pose)
+            #print(pose)
         except (tf2_ros.LookupException,
                 tf2_ros.ConnectivityException,
                 tf2_ros.ExtrapolationException):
@@ -262,6 +268,12 @@ class OccupancyGrid2d(object):
             angle = msg.angle_min + idx * msg.angle_increment
 
             far = False
+
+
+            if abs(angle) <= self._x_res:
+                pubR = rospy.Publisher(robot_name + '/r', Float32, queue_size=1)
+                pubR.publish(r)
+
             # Throw out this point if it is too close or too far away.
             if r > msg.range_max:
                 far = True
@@ -285,6 +297,7 @@ class OccupancyGrid2d(object):
                     self._map[idx_x][idx_y] = self._map[idx_x][idx_y] + self._free_update
                 else:
                     self._map[idx_x][idx_y] = self._map[idx_x][idx_y] + self._free_update
+                
             # Walk along this ray from the scan point to the sensor.
             # Update log-odds at each voxel along the way.
             # Only update each voxel once. 
@@ -352,5 +365,61 @@ class OccupancyGrid2d(object):
 
                 m.points.append(p)
                 m.colors.append(self.Colormap(ii, jj))
+        
+        
+        o = OccupancyGridUpdate()
+        o.occupancy_grid = self.LogOddsToProbability(self._map).flatten().tolist()    
+        o.width = self._x_num
+        o.height = self._y_num
+        #o.resolution = self._x_res
+
+        self._grid_pub.publish(o)
+
+        '''
+        o.header.stamp = rospy.Time.now()
+        o.header.frame_id = self._fixed_frame
+        #o.info.resolution = self._x_res
+        #o.info.width = self._x_num
+        #o.info.height = self._y_num
+
+            # fill o with the parameters from launchfile
+        width = self._x_num
+        height = self._y_num
+        resolution = self._x_res
+        o.info.resolution = resolution
+        o.info.width = width
+        o.info.height = height
+        o.data = range(width*height)
+
+        grid = np.ndarray((width*height,), buffer=np.zeros((width, height), dtype=np.uint8),
+             dtype=np.uint8)
+        grid.fill(int(-1))
+
+        data = ((100*self._map).astype(np.uint8).flatten()).tolist()
+
+        for i in range(width*height):
+            grid[i] = data[i]
+            o.data[i] = grid[i]
+
+
+        print(type(o.data))
+        print(o.data[1929])
+        print(type(o.data[1]))
+
+
+
+        # set map origin [meters]
+        o.info.origin.position.x = 0
+        o.info.origin.position.y = 0
+        '''
+        '''
+        print(o.info.width)
+        print(o.info.height)
+        print(len(o.data))
+        '''
+        
+        ### o.info.origin = ????
 
         self._vis_pub.publish(m)
+
+        #self._grid_pub.publish(o)

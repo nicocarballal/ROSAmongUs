@@ -81,18 +81,24 @@ def task_manager(robot_name):
         path = a_star_function(X, Y, taskX, taskY)
         robotPaths[robot_name] = path
         robotPaths[robot_name].pop(0)
-        robotTasks[robot_name].pop(0)
+        lastTask = robotTasks[robot_name].pop(0)
       else:
         ## don't want the controller to go anywhere new
         return
+    elif msg1.need_task_update:
+      if len(robotPaths[robot_name]) > 0:
+        X = msg2.pose.pose.position.x
+        Y = msg2.pose.pose.position.y
+        X = round(X*4)/4
+        Y = round(Y*4)/4
+        taskX = lastTask
+        taskY = lastTask
+        path = a_star_function(X, Y, taskX, taskY)
+        robotPaths[robot_name] = path
+        robotPaths[robot_name].pop(0)
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
       return 
 
-
-    X = msg2.pose.pose.position.x
-    Y = msg2.pose.pose.position.y
-    taskX = taskLocations[robotTasks[robot_name][0]][0]
-    taskY = taskLocations[robotTasks[robot_name][0]][1]
 
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
@@ -123,18 +129,18 @@ def task_manager(robot_name):
       path = a_star_function(X, Y, taskX, taskY)
       robotPaths[robot_name] = path
       robotPaths[robot_name].pop(0)
-      robotTasks[robot_name].pop(0)
+      lastTask = robotTasks[robot_name].pop(0)
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
-        X = msg2.pose.pose.position.x
-        Y = msg2.pose.pose.position.y
-        X = round(X*4)/4
-        Y = round(Y*4)/4
-        taskX = taskLocations[robotTasks[robot_name][0]][0]
-        taskY = taskLocations[robotTasks[robot_name][0]][1]
-        path = a_star_function(X, Y, taskX, taskY)
-        robotPaths[robot_name] = path
-        robotPaths[robot_name].pop(0)
-        robotTasks[robot_name].pop(0)
+      X = msg2.pose.pose.position.x
+      Y = msg2.pose.pose.position.y
+      X = round(X*4)/4
+      Y = round(Y*4)/4
+      taskX = taskLocations[robotTasks[robot_name][0]][0]
+      taskY = taskLocations[robotTasks[robot_name][0]][1]
+      path = a_star_function(X, Y, taskX, taskY)
+      robotPaths[robot_name] = path
+      robotPaths[robot_name].pop(0)
+      lastTask = robotTasks[robot_name].pop(0)
 
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
       return 
@@ -179,6 +185,8 @@ if __name__ == '__main__':
     robot7Tasks = ["task1", "task4", "task5", "task10"]
 
     initialize = True
+
+    lastTask = None
 
     robotPaths = {"robot0": [], "robot1": [], "robot2": [], "robot3": [], "robot4": [], 
     "robot5": [], "robot6": [], "robot7": []}

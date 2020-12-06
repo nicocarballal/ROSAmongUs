@@ -15,6 +15,7 @@ import geometry_msgs
 from geometry_msgs.msg import Twist
 from among_us.msg import RobotTaskUpdate
 from visualization_msgs.msg import Marker, MarkerArray
+from std_msgs.msg import Float32
 import time
 from time import sleep
 
@@ -115,6 +116,16 @@ def controller(robot_frame, target_frame):
           control_command.linear.x = max_translation_speed* translation_x_error/abs(translation_x_error)
         else:
           control_command.linear.x = translation_x_error * K1 
+
+        try:
+          if (translation_x_error < 2):
+            ##if (r != inf):
+            msg = rospy.wait_for_message("/" + robot_name + "/r", Float32, .1)
+            if (msg < 2):
+              publish_task_update(robot_frame, True, False) ## Needs new a star
+        except e:
+          print('Timeout waiting for robot_name/r')
+          
       
 
 
@@ -179,5 +190,6 @@ if __name__ == '__main__':
 
   try:
     controller(robot_name, robot_name + 'goal')
+    print("I'll bet you 100 bucks this doesn't")
   except rospy.ROSInterruptException:
     pass

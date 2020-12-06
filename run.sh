@@ -1,6 +1,6 @@
 source ./../devel/setup.bash
 roslaunch stdr_launchers among_us.launch x:=13 y:=10 &
-source spawn_robots.bash
+source spawn_robots.bash 
 python among_us/src/rviz_track_position.py &
 python among_us/src/task_creator.py &
 python among_us/src/taskmaster.py robot0 &

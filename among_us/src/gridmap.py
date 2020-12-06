@@ -4,7 +4,7 @@ from utils import png_to_ogm
 
 
 class OccupancyGridMap:
-    def __init__(self, data_array, cell_size, occupancy_threshold=0.8):
+    def __init__(self, data_array, cell_size, occupancy_threshold=0.9):
         """
         Creates a grid map
         :param data_array: a 2D array with a value of occupancy per cell (values from 0 - 1)
@@ -12,7 +12,8 @@ class OccupancyGridMap:
         :param occupancy_threshold: A threshold to determine whether a cell is occupied or free.
         A cell is considered occupied if its value >= occupancy_threshold, free otherwise.
         """
-
+        print('Occupancy Grid Map initialized')
+        
         self.data = data_array
         self.dim_cells = data_array.shape
         self.dim_meters = (self.dim_cells[1] * cell_size, self.dim_cells[0] * cell_size)
@@ -144,7 +145,7 @@ class OccupancyGridMap:
         :return: True if the given point is occupied, false otherwise
         """
         x_index, y_index = point_idx
-        l = 8
+        l = 2
         for d in range(1, l):
             x_left = (x_index - d, y_index)
             x_down = (x_index, y_index - d)
@@ -221,6 +222,11 @@ class OccupancyGridMap:
         """
         ogm_data = png_to_ogm(filename, normalized=True)
         ogm_data_arr = numpy.array(ogm_data)
+        #print(ogm_data_arr.shape)
+        #(280, 477)
+        #print(type(ogm_data_arr))
+        #np.ndarray
+        #print(ogm_data_array[1:1000])
         ogm = OccupancyGridMap(ogm_data_arr, cell_size)
 
         return ogm

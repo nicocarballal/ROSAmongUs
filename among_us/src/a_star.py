@@ -9,10 +9,10 @@ def _get_movements_4n():
     Get all possible 4-connectivity movements.
     :return: list of movements with cost [(dx, dy, movement_cost)]
     """
-    return [(5, 0, 1.0),
-            (0, 5, 1.0),
-            (-5, 0, 1.0),
-            (0, -5, 1.0)]
+    return [(2, 0, 1.0),
+            (0, 2, 1.0),
+            (-2, 0, 1.0),
+            (0, -2, 1.0)]
 
 
 def _get_movements_8n():
