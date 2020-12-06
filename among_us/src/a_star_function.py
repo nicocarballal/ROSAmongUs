@@ -43,8 +43,9 @@ def a_star_function(X, Y, taskX, taskY):
         data_array = np.reshape(gmap.occupancy_grid, (-1, gmap.height))
 
         data_array = np.fliplr(np.rot90(data_array, -1))
-
         gmap = OccupancyGridMap(data_array, cell_size)
+
+
 
         #OccupancyGridMap.from_png('among-us-edges-fixed-ai1.png', .05)
         # set a start and an end node (in meters)
