@@ -43,6 +43,7 @@ def a_star_function(X, Y, taskX, taskY):
         data_array = np.reshape(gmap.occupancy_grid, (-1, gmap.height))
 
         data_array = np.fliplr(np.rot90(data_array, -1))
+        print(np.mean(data_array))
         gmap = OccupancyGridMap(data_array, cell_size)
 
 
@@ -54,8 +55,7 @@ def a_star_function(X, Y, taskX, taskY):
  
         # run A*
         path, path_px = a_star(start_node, goal_node, gmap, movement='4N')
-
-        print(path)
+        
         
         gmap.plot()
         
@@ -75,8 +75,11 @@ def a_star_function(X, Y, taskX, taskY):
 
         plt.show()
         
-        
         path = path_cleaner(path)
+
+
+
+
 
         return path
     except Exception as e:
@@ -90,6 +93,8 @@ def a_star_function(X, Y, taskX, taskY):
 
         # run A*
         path, path_px = a_star(start_node, goal_node, gmap, movement='4N')
+
+        '''
         
         gmap.plot()
         
@@ -108,8 +113,10 @@ def a_star_function(X, Y, taskX, taskY):
             plt.plot(goal_node_px[0], goal_node_px[1], 'go')
 
         plt.show()
+        '''
         
         
         path = path_cleaner(path)
 
         return path
+

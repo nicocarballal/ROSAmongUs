@@ -116,15 +116,20 @@ def controller(robot_frame, target_frame):
           control_command.linear.x = max_translation_speed* translation_x_error/abs(translation_x_error)
         else:
           control_command.linear.x = translation_x_error * K1 
-
+        '''
         try:
-          if (translation_x_error < 2):
+          if (translation_x_error > .2):
+            print(robot_name)
             ##if (r != inf):
-            msg = rospy.wait_for_message("/" + robot_name + "/r", Float32, .1)
-            if (msg < 2):
+            msg = rospy.wait_for_message("/" + robot_name + "/r", Float32, 100)
+            print('got an r message at the very least')
+            print(msg)
+            if (msg.data < .2):
+              print('published task')
               publish_task_update(robot_frame, True, False) ## Needs new a star
-        except e:
+        except Exception as e:
           print('Timeout waiting for robot_name/r')
+        '''
           
       
 

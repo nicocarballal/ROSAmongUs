@@ -4,7 +4,7 @@ from utils import png_to_ogm
 
 
 class OccupancyGridMap:
-    def __init__(self, data_array, cell_size, occupancy_threshold=0.6):
+    def __init__(self, data_array, cell_size, occupancy_threshold=0.501):
         """
         Creates a grid map
         :param data_array: a 2D array with a value of occupancy per cell (values from 0 - 1)
@@ -146,7 +146,8 @@ class OccupancyGridMap:
         """
         x_index, y_index = point_idx
         l = 1
-        for d in range(1, l):
+        points = 0
+        for d in range(1, l+1):
             x_left = (x_index - d, y_index)
             x_down = (x_index, y_index - d)
             x_right = (x_index + d, y_index)
@@ -165,7 +166,9 @@ class OccupancyGridMap:
             data_right_up = self.get_data_idx(x_right_up)
             data_right_down = self.get_data_idx(x_right_down)
             points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
-            if any(x <= self.occupancy_threshold for x in points):
+
+
+            if any(x >= self.occupancy_threshold for x in points):
                 return True
         else:
             return False
