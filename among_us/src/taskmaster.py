@@ -35,7 +35,7 @@ def taskmaster():
     robot_name = sys.argv[1]
     print(robot_name)
     if robot_name == 'robot6' or robot_name == 'robot6':
-        r.sleep()
+        rospy.sleep(10.)
     while not rospy.is_shutdown():
       task_manager(robot_name)
       #task_manager('robot2')
@@ -47,7 +47,7 @@ def task_manager(robot_name):
 
         #find nearest robot
         if not target[robot_name]:
-            target = find_nearest_robot(imposter, alive_crewmates)
+            target = find_nearest_robot(robot_name, alive_crewmates)
             targets[robot_name] = target
 
         msg1 = rospy.wait_for_message("/" + robot_name + "/taskUpdate", RobotTaskUpdate, timeout)
@@ -95,9 +95,16 @@ def task_manager(robot_name):
                 t.transform.rotation.z = 0.0
                 t.transform.rotation.w = 1.0
                 tfm = tf2_msgs.msg.TFMessage([t])
-
                 pub0.publish(tfm)
+
+                pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
+                updateMsg = RobotTaskUpdate()
+                updateMsg.robot_name = robot_name
+                updateMsg.need_task_update = False
+                updateMsg.need_path_update = False
+                pub_update.publish(updateMsg)
                 r.sleep()
+            return
 
         else:
             return
