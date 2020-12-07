@@ -48,6 +48,9 @@ class OccupancyGrid2d(object):
         occupancy_grid = [self.ProbabilityToLogOdds(point) for point in occupancy_grid]
         grid = np.array(occupancy_grid)
         
+        print(len(grid))
+        print(self._x_num)
+        print(self._y_num)
 
         self._map = grid.reshape((self._x_num, self._y_num))
         #self._map = np.zeros((self._x_num, self._y_num))

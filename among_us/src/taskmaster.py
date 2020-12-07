@@ -78,7 +78,7 @@ def task_manager(robot_name):
         Y = round(Y*4)/4
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
-        path = a_star_function(X, Y, taskX, taskY)
+        path = a_star_function(X, Y, taskX, taskY, robot_name)
         robotPaths[robot_name] = path
         robotPaths[robot_name].pop(0)
         robotTasks[robot_name].pop(0)
@@ -120,7 +120,7 @@ def task_manager(robot_name):
       Y = round(Y*4)/4
       taskX = taskLocations[robotTasks[robot_name][0]][0]
       taskY = taskLocations[robotTasks[robot_name][0]][1]
-      path = a_star_function(X, Y, taskX, taskY)
+      path = a_star_function(X, Y, taskX, taskY, robot_name)
       robotPaths[robot_name] = path
       robotPaths[robot_name].pop(0)
       robotTasks[robot_name].pop(0)
@@ -131,7 +131,7 @@ def task_manager(robot_name):
         Y = round(Y*4)/4
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
-        path = a_star_function(X, Y, taskX, taskY)
+        path = a_star_function(X, Y, taskX, taskY, robot_name)
         robotPaths[robot_name] = path
         robotPaths[robot_name].pop(0)
         robotTasks[robot_name].pop(0)

@@ -46,7 +46,7 @@ def controller(robot_frame, target_frame):
   r = rospy.Rate(10) # 10hz
 
   K1 = .3
-  K2 = .3
+  K2 = 2
   K1d = .1
   K2d = .1
   # Loop until the node is killed with Ctrl-C
@@ -84,11 +84,17 @@ def controller(robot_frame, target_frame):
       last_translation_x_error = translation_x_error
       last_rotation_error = rotation_error
 
-      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
+      if robot_frame == "robot7":
+        print(abs(trans.transform.translation.x) + abs(trans.transform.translation.y))
+
+      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .2: 
+        K2 = 2
         publish_task_update(robot_frame, False, True)
         control_command = Twist()
         control_command.linear.x = 0
         control_command.angular.z = 0
+        pub.publish(control_command)
+        continue
         
         ### Publish to 'robot_name/task' with need_path_update!
 
@@ -97,12 +103,16 @@ def controller(robot_frame, target_frame):
       control_command = Twist()
 
       
-      max_rotation_speed = .3
-      max_translation_speed = 2
+      max_rotation_speed = .5
+      max_translation_speed = 1
+      if K2 > .1:
+        K2 = K2 * .97
+      if robot_frame == "robot7":
+        print(K2)
 
 
 
-      if abs(rotation_error) > .2:
+      if abs(rotation_error) > .1:
         if abs(rotation_error * -K2) > max_rotation_speed:
           control_command.angular.z = max_rotation_speed * (-rotation_error)/abs(rotation_error)
         else:
@@ -116,6 +126,8 @@ def controller(robot_frame, target_frame):
           control_command.linear.x = max_translation_speed* translation_x_error/abs(translation_x_error)
         else:
           control_command.linear.x = translation_x_error * K1 
+
+        
         '''
         try:
           if (translation_x_error > .2):

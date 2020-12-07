@@ -4,7 +4,7 @@ from utils import png_to_ogm
 
 
 class OccupancyGridMap:
-    def __init__(self, data_array, cell_size, occupancy_threshold=0.501):
+    def __init__(self, data_array, cell_size, occupancy_threshold=0.1):
         """
         Creates a grid map
         :param data_array: a 2D array with a value of occupancy per cell (values from 0 - 1)
@@ -12,8 +12,6 @@ class OccupancyGridMap:
         :param occupancy_threshold: A threshold to determine whether a cell is occupied or free.
         A cell is considered occupied if its value >= occupancy_threshold, free otherwise.
         """
-        print('Occupancy Grid Map initialized')
-        
         self.data = data_array
         self.dim_cells = data_array.shape
         self.dim_meters = (self.dim_cells[1] * cell_size, self.dim_cells[0] * cell_size)
@@ -147,7 +145,7 @@ class OccupancyGridMap:
         x_index, y_index = point_idx
         l = 1
         points = 0
-        for d in range(1, l+1):
+        for d in range(0, l+1):
             x_left = (x_index - d, y_index)
             x_down = (x_index, y_index - d)
             x_right = (x_index + d, y_index)
@@ -166,8 +164,6 @@ class OccupancyGridMap:
             data_right_up = self.get_data_idx(x_right_up)
             data_right_down = self.get_data_idx(x_right_down)
             points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
-
-
             if any(x >= self.occupancy_threshold for x in points):
                 return True
         else:
@@ -208,6 +204,36 @@ class OccupancyGridMap:
 
         return x, y
 
+
+    def occupancy_cost(occupancy_cost_factor, x_index, y_index):
+        x_index, y_index = point_idx
+        rng = 2
+        count = 0
+        for d in range(0, rng + 1):
+            x_left = (x_index - d, y_index)
+            x_down = (x_index, y_index - d)
+            x_right = (x_index + d, y_index)
+            x_up = (x_index, y_index + d)
+            x_left_up = (x_index - d, y_index + d)
+            x_left_down = (x_index - d, y_index - d)
+            x_right_up = (x_index + d, y_index + d)
+            x_right_down = (x_index + d, y_index - d)
+            data = self.get_data_idx((x_index, y_index)) 
+            data_left = self.get_data_idx(x_left)
+            data_down = self.get_data_idx(x_down)
+            data_right = self.get_data_idx(x_right)
+            data_up = self.get_data_idx(x_up) 
+            data_left_up = self.get_data_idx(x_left_up)
+            data_left_down = self.get_data_idx(x_left_down)
+            data_right_up = self.get_data_idx(x_right_up)
+            data_right_down = self.get_data_idx(x_right_down)
+            points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
+            for i in [x >= self.occupancy_threshold for x in points]:
+                if i:
+                    count += 1
+        print(count*occupancy_cost_factor)
+        return count * occupancy_cost_factor
+        
     def plot(self, alpha=1, min_val=0, origin='lower'):
         """
         plot the grid map
