@@ -32,70 +32,34 @@ from imposter_search import find_nearest_robot, kill_nearest_robot
 #Define the method which contains the main functionality of the node.
 
 
-def parameter_server():
-	timeout = 1
-    while not rospy.is_shutdown():
-      try:
-      	robot0 = rospy.wait_for_message("/robot0/odom", Odometry, timeout)
-      	robot0X = robot0.pose.pose.position.x
-        robot0Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot0/positionX', robot0X)
-        rospy.set_param('robot0/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot1 = rospy.wait_for_message("/robot1/odom", Odometry, timeout)
-      	robot1X = robot0.pose.pose.position.x
-        robot1Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot1/positionX', robot0X)
-        rospy.set_param('robot1/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot2 = rospy.wait_for_message("/robot2/odom", Odometry, timeout)
-      	robot2X = robot0.pose.pose.position.x
-        robot2Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot2/positionX', robot0X)
-        rospy.set_param('robot2/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot3 = rospy.wait_for_message("/robot3/odom", Odometry, timeout)
-      	robot3X = robot0.pose.pose.position.x
-        robot3Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot3/positionX', robot0X)
-        rospy.set_param('robot3/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot4 = rospy.wait_for_message("/robot4/odom", Odometry, timeout)
-      	robot4X = robot0.pose.pose.position.x
-        robot4Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot4/positionX', robot0X)
-        rospy.set_param('robot4/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot5 = rospy.wait_for_message("/robot5/odom", Odometry, timeout)
-      	robot5X = robot0.pose.pose.position.x
-        robot5Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot5/positionX', robot0X)
-        rospy.set_param('robot5/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot6 = rospy.wait_for_message("/robot6/odom", Odometry, timeout)
-      	robot6X = robot0.pose.pose.position.x
-        robot6Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot6/positionX', robot0X)
-        rospy.set_param('robot6/positionY', robot0Y)
-      except:
-      	pass
-      try:
-      	robot7 = rospy.wait_for_message("/robot7/odom", Odometry, timeout)
-      	robot7X = robot0.pose.pose.position.x
-        robot7Y = robot0.pose.pose.position.Y
-        rospy.set_param('robot7/positionX', robot0X)
-        rospy.set_param('robot7/positionY', robot0Y)
-      except:
-      	pass
+def callback(message, args):
+    robot_name = args
+    
+
+    robotX = message.pose.pose.position.x
+    robotY = message.pose.pose.position.y
+    rospy.set_param('/' + robot_name + '/positionX', robotX)
+    rospy.set_param('/' + robot_name + '/positionY', robotY)
+    
+def parameter_server(robot_name):
+
+    #Create a new instance of the rospy.Subscriber object which we can 
+    #use to receive messages of type std_msgs/String from the topic /chatter_talk.
+    #Whenever a new message is received, the method callback() will be called
+    #with the received message as its first argument.
+    rospy.Subscriber("/" + robot_name + "/odom", Odometry, callback, (robot_name))
+
+
+    #Wait for messages to arrive on the subscribed topics, and exit the node
+    #when it is killed with Ctrl+C
+    rospy.spin()
+
+
+
+
+
+if __name__ == '__main__':
+    robot_name = sys.argv[1]
+    print('Initialized parameter server for: ' + robot_name)
+    rospy.init_node('parameter_server', anonymous=True)
+    parameter_server(robot_name)

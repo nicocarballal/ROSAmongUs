@@ -65,9 +65,6 @@ def controller(robot_frame, target_frame):
     try: 
 
       trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
-
-      if robot_name == 'robot6':
-        print(trans)
       # Process trans to get your state error
       # Generate a control command to send to the robot
       translation_x_error = trans.transform.translation.x

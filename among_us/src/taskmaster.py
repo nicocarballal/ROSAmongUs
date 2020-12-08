@@ -33,10 +33,10 @@ from imposter_search import find_nearest_robot, kill_nearest_robot
 
 def taskmaster():
     robot_name = sys.argv[1]
-    print(robot_name)
+    if robot_name == 'robot6' or robot_name == 'robot7':
+      sleep(10)
     while not rospy.is_shutdown():
       if robot_name == 'robot6' or robot_name == 'robot7':
-        sleep(10)
         task_manager_imposter(robot_name)
       else:
         task_manager(robot_name)
@@ -49,12 +49,14 @@ def task_manager_imposter(robot_name):
         timeout = 1
 
         # wait for message from imposter and target
-        imposter_msg = rospy.wait_for_message("/" + robot_name + "/odom", Odometry, timeout)
+        imposterX = rospy.get_param(robot_name + "/positionX")
+        imposterY = rospy.get_param(robot_name + "/positionY")
         taskUpdate_msg = rospy.wait_for_message("/" + robot_name + "/taskUpdate", RobotTaskUpdate, timeout)
         ## if robot doesn't have a target
 
         # THIS LOOP ONLY KILLS WHEN AT A WAYPOINT
         if taskUpdate_msg.need_path_update:
+          print(imposterPaths)
           if len(imposterPaths[robot_name]) > 0:
             imposterPaths[robot_name].pop(0)
             pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
@@ -65,24 +67,24 @@ def task_manager_imposter(robot_name):
             pub_update.publish(updateMsg)
           elif len(alive_crewmates) > 0:
             target = find_nearest_robot(robot_name, alive_crewmates)
-            target_msg = rospy.wait_for_message("/" + target + "/odom", Odometry, timeout)
-            X = imposter_msg.pose.pose.position.x
-            Y = imposter_msg.pose.pose.position.y
+            targetX = rospy.get_param(target + "/positionX")
+            targetY = rospy.get_param(target + "/positionY")
+            X = imposterX
+            Y = imposterY
             X = round(X*4)/4
             Y = round(Y*4)/4
-            targetX = target_msg.pose.pose.position.x
-            targetY = target_msg.pose.pose.position.y 
             targetX = round(targetX*4)/4
             targetY = round(targetY*4)/4
             path = a_star_function(X, Y, targetX, targetY, robot_name)
+            print(path)
             imposterPaths[robot_name] = path
             imposterPaths[robot_name].pop(0)
             targets[robot_name] = target
           else: 
             return 
 
-        if len(alive_crewmates) > 0 and len(robotPaths[robot_name]) == 0:
-          print('Path finished but crewmates left')
+        if len(alive_crewmates) > 0 and len(imposterPaths[robot_name]) == 0:
+        
           return 
         pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
         t = geometry_msgs.msg.TransformStamped()
@@ -98,29 +100,29 @@ def task_manager_imposter(robot_name):
         t.transform.rotation.w = 1.0
         tfm = tf2_msgs.msg.TFMessage([t])
 
+
         pub0.publish(tfm)
         r.sleep()
 
       except Exception as e:
         ### Check that there is an alive crewmate if the imposter has nowhere to go
           if len(alive_crewmates) > 0 and len(imposterPaths[robot_name]) == 0:
-            if robot_name == 'robot6' or robot_name == 'robot7':
-              print(robot_name)
-            X = imposter_msg.pose.pose.position.x
-            Y = imposter_msg.pose.pose.position.y
+          
+            X = imposterX
+            Y = imposterY
             X = round(X*4)/4
             Y = round(Y*4)/4
             target = find_nearest_robot(robot_name, alive_crewmates)
-            target_msg = rospy.wait_for_message("/" + target + "/odom", Odometry, timeout)
-            targetX = target_msg.pose.pose.position.x
-            targetY = target_msg.pose.pose.position.y 
+            targetX = rospy.get_param(target + "/positionX")
+            targetY = rospy.get_param(target + "/positionY")
             targetX = round(targetX*4)/4
             targetY = round(targetY*4)/4
             path = a_star_function(X, Y, targetX, targetY, robot_name)
+            print(path)
             imposterPaths[robot_name] = path
             imposterPaths[robot_name].pop(0)
             targets[robot_name] = target
-          if len(alive_crewmates) == 0 and len(robotPaths[robot_name]) == 0:
+          if len(alive_crewmates) == 0 and len(imposterPaths[robot_name]) == 0:
             return 
           pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
           t = geometry_msgs.msg.TransformStamped()
@@ -135,6 +137,7 @@ def task_manager_imposter(robot_name):
           t.transform.rotation.z = 0.0
           t.transform.rotation.w = 1.0
           tfm = tf2_msgs.msg.TFMessage([t])
+
           pub0.publish(tfm)
 
           r.sleep()

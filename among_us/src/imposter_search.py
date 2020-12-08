@@ -14,28 +14,24 @@ from a_star_function import a_star_function
 from nav_msgs.msg import Odometry
 
 def find_nearest_robot(imposter, crewmates):
-    print(crewmates)
+
     timeout = 1
     time1 = time.time()
-    imposter_msg = rospy.wait_for_message("/" + imposter + "/odom", Odometry, timeout)
-    ix = imposter_msg.pose.pose.position.x
-    iy = imposter_msg.pose.pose.position.y
+    ix = rospy.get_param(imposter + "/positionX")
+    iy = rospy.get_param(imposter + "/positionY")
 
     smallest_distance = float('inf')
     closest_robot = None
     for c in crewmates:
-
-        crewmate_msg = rospy.wait_for_message("/" + c + "/odom", Odometry, timeout)
-        cx = crewmate_msg.pose.pose.position.x
-        cy = crewmate_msg.pose.pose.position.y
+        cx = rospy.get_param(c + "/positionX")
+        cy  = rospy.get_param(c + "/positionY")
         dist = np.sqrt((ix - cx)**2 + (iy - cy)**2)
 
         if dist < smallest_distance:
             smallest_distance = dist
             closest_robot = c
-    print(closest_robot)
     time2 = time.time()
-    print("Time: " + str(time2 - time1))
+
     return closest_robot
 
 
