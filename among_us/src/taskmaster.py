@@ -57,12 +57,18 @@ def task_manager(robot_name):
 
                 i_x = imposter_msg.pose.pose.position.x
                 i_y = imposter_msg.pose.pose.position.y
+                i_x = round(i_x*4)/4
+                i_y = round(i_x*4)/4
+
 
                 t_x = target_msg.pose.pose.position.x
                 t_y = target_msg.pose.pose.position.y
+                t_x = round(t_x*4)/4
+                t_y = round(t_y*4)/4
 
                 path = a_star_function(i_x, i_y, t_x, t_y)
                 imposterPaths[robot_name] = path
+                print(imposterPaths[robot_name][1])
                 pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
                 t = geometry_msgs.msg.TransformStamped()
@@ -86,18 +92,19 @@ def task_manager(robot_name):
                 target = targets[robot_name]
                 print('need path update for target: ' + target)
                 imposter_msg = rospy.wait_for_message("/" + robot_name + "/odom", Odometry, timeout)
-                print('first chace')
                 print(targets[robot_name])
                 target_msg = rospy.wait_for_message("/" + targets[robot_name] + "/odom", Odometry, timeout)
-                print('second chance')
+                
 
                 #check if imposter is within killing range
                 i_x = imposter_msg.pose.pose.position.x
                 i_y = imposter_msg.pose.pose.position.y
-                print('third chance')
+                i_x = round(i_x*4)/4
+                i_y = round(i_y*4)/4
                 t_x = target_msg.pose.pose.position.x
                 t_y = target_msg.pose.pose.position.y
-                print('fourth chance')
+                t_x = round(t_x*4)/4
+                t_y = round(t_y*4)/4
                 print(i_x, i_y, t_x, t_y)
                 print(np.sqrt((i_x - t_x)**2 + (i_y - t_y)**2))
                 if np.sqrt((i_x - t_x)**2 + (i_y - t_y)**2) < 1:
@@ -119,6 +126,7 @@ def task_manager(robot_name):
                     print('update')
                     path = a_star_function(i_x, i_y, t_x, t_y)
                     imposterPaths[robot_name] = path
+                    print(imposterPaths[robot_name][1])
                     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
                     t = geometry_msgs.msg.TransformStamped()
