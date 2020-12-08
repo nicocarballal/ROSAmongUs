@@ -15,7 +15,8 @@ from nav_msgs.msg import Odometry
 
 def find_nearest_robot(imposter, crewmates):
     print(crewmates)
-    timeout = 5
+    timeout = 1
+    time1 = time.time()
     imposter_msg = rospy.wait_for_message("/" + imposter + "/odom", Odometry, timeout)
     ix = imposter_msg.pose.pose.position.x
     iy = imposter_msg.pose.pose.position.y
@@ -33,6 +34,8 @@ def find_nearest_robot(imposter, crewmates):
             smallest_distance = dist
             closest_robot = c
     print(closest_robot)
+    time2 = time.time()
+    print("Time: " + str(time2 - time1))
     return closest_robot
 
 

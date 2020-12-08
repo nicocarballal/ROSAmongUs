@@ -8,7 +8,7 @@ import rospy
 from visualization_msgs.msg import Marker, MarkerArray
 from among_us.msg import OccupancyGridUpdate
 import numpy as np
-
+import time 
 def path_cleaner(array):
     path = []
     last_waypoint = array[0]
@@ -37,6 +37,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
     try:
         print('waiting for VIS/MAP')
         timeout = 100
+        time1 = time.time()
         gmap = rospy.wait_for_message("map/occupancy_grid", OccupancyGridUpdate, timeout)
 
 
@@ -57,13 +58,13 @@ def a_star_function(X, Y, taskX, taskY, robotName):
         goal_node = (taskX, taskY) ##AMONG US: Where the task is :)
  
         # run A*
-        
+
 
         path, path_px = a_star(start_node, goal_node, gmap, movement='4N')
         
-        
-        
         '''
+        
+ 
         gmap.plot()
         if path:
             # plot resulting path in pixels over the map
@@ -80,9 +81,13 @@ def a_star_function(X, Y, taskX, taskY, robotName):
 
         plt.show()
         
+
         '''
-        
         path = path_cleaner(path)
+
+        time2 = time.time()
+
+        print('A Star Time:' + str(time2 - time1))
         robot_name = robotName
 
 
@@ -105,7 +110,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
         path, path_px = a_star(start_node, goal_node, gmap, movement='4N')
 
         
-        '''
+        
         gmap.plot()
         
 
@@ -123,7 +128,6 @@ def a_star_function(X, Y, taskX, taskY, robotName):
             plt.plot(goal_node_px[0], goal_node_px[1], 'go')
 
         plt.show()
-        '''
         
         
         
@@ -173,7 +177,7 @@ def publish_path():
 
             pub.publish(newPath)
         except Exception as e:
-            print(robot_name + ' path not published yet')
+            print(robot_name + ': path not published yet')
 
 
 #Python's syntax for a main() method

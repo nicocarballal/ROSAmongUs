@@ -63,10 +63,11 @@ def controller(robot_frame, target_frame):
     #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
     #trans = tfBuffer.lookup_transform('SOURCE FRAME', 'TARGET FRAME', rospy.Time())
     try: 
+
       trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
 
-
-
+      if robot_name == 'robot6':
+        print(trans)
       # Process trans to get your state error
       # Generate a control command to send to the robot
       translation_x_error = trans.transform.translation.x
@@ -83,7 +84,8 @@ def controller(robot_frame, target_frame):
 
       last_translation_x_error = translation_x_error
       last_rotation_error = rotation_error
-      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .2: 
+      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .2:
+
         K2 = 2
         publish_task_update(robot_frame, False, True)
         control_command = Twist()

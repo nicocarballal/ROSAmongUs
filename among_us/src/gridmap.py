@@ -145,7 +145,8 @@ class OccupancyGridMap:
         x_index, y_index = point_idx
         l = 1
         points = 0
-        for d in range(0, l+1):
+        data = self.get_data_idx((x_index, y_index)) 
+        for d in range(1, l+1):
             x_left = (x_index - d, y_index)
             x_down = (x_index, y_index - d)
             x_right = (x_index + d, y_index)
@@ -154,7 +155,6 @@ class OccupancyGridMap:
             x_left_down = (x_index - d, y_index - d)
             x_right_up = (x_index + d, y_index + d)
             x_right_down = (x_index + d, y_index - d)
-            data = self.get_data_idx((x_index, y_index)) 
             data_left = self.get_data_idx(x_left)
             data_down = self.get_data_idx(x_down)
             data_right = self.get_data_idx(x_right)
@@ -209,25 +209,17 @@ class OccupancyGridMap:
         xidx, yidx = point_idx
         rng = 2
         count = 0
+        data = self.get_data_idx((xidx, yidx)) 
         for d in range(0, rng + 1):
             x_left = (xidx - d, yidx)
             x_down = (xidx, yidx - d)
             x_right = (xidx + d, yidx)
             x_up = (xidx, yidx + d)
-            x_left_up = (xidx - d, yidx + d)
-            x_left_down = (xidx - d, yidx - d)
-            x_right_up = (xidx + d, yidx + d)
-            x_right_down = (xidx + d, yidx - d)
-            data = self.get_data_idx((xidx, yidx)) 
             data_left = self.get_data_idx(x_left)
             data_down = self.get_data_idx(x_down)
             data_right = self.get_data_idx(x_right)
             data_up = self.get_data_idx(x_up) 
-            data_left_up = self.get_data_idx(x_left_up)
-            data_left_down = self.get_data_idx(x_left_down)
-            data_right_up = self.get_data_idx(x_right_up)
-            data_right_down = self.get_data_idx(x_right_down)
-            points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
+            points = [data, data_left, data_down, data_right, data_up]
             for i in [x >= self.occupancy_threshold for x in points]:
                 if i:
                     count += 1
