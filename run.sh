@@ -21,8 +21,8 @@ python among_us/src/robot_control.py robot4 &
 python among_us/src/robot_control.py robot5 &
 python among_us/src/robot_control.py robot6 &
 python among_us/src/robot_control.py robot7 &
-#python among_us/src/robot_control1.py &
-python among_us/src/taskmaster.py &
-roslaunch stdr_launchers among_rviz.launch
+# python among_us/src/robot_control1.py &
+# python among_us/src/taskmaster.py &
+#roslaunch stdr_launchers among_rviz.launch
 ## roslaunch stdr_launchers robot_control.py
 

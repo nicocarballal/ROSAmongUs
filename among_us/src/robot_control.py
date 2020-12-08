@@ -166,11 +166,11 @@ if __name__ == '__main__':
   robot3Tasks = ["task7", "task1", "task2", "task4"]
   robot4Tasks = ["task8", "task9", "task4", "task2"]
   robot5Tasks = ["task9", "task8", "task3", "task6"]
-  robot6Tasks = ["task10", "task6", "task1", "task8"]
-  robot7Tasks = ["task1", "task4", "task5", "task10"]
+  #robot6Tasks = ["task10", "task6", "task1", "task8"]
+  #robot7Tasks = ["task1", "task4", "task5", "task10"]
 
   robotTasks = {"robot0": robot0Tasks, "robot1": robot1Tasks, "robot2": robot2Tasks, 
-  "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks, "robot6": robot6Tasks, "robot7": robot7Tasks}
+  "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks}
 
   rospy.init_node('among_us_controller', anonymous=True)
 

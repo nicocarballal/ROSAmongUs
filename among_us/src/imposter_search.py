@@ -11,28 +11,31 @@ from visualization_msgs.msg import Marker, MarkerArray
 import time
 from time import sleep
 from a_star_function import a_star_function
+from nav_msgs.msg import Odometry
 
 def find_nearest_robot(imposter, crewmates):
-	
-	imposter_msg = rospy.wait_for_message("/" + imposter + "/odom", Odometry, timeout)
-	ix = imposter_msg.pose.pose.position.x
-	iy = imposter_msg.pose.pose.position.y
+    timeout = 0.3
+    imposter_msg = rospy.wait_for_message("/" + imposter + "/odom", Odometry, timeout)
+    ix = imposter_msg.pose.pose.position.x
+    iy = imposter_msg.pose.pose.position.y
 
-	smallest_distance = float('inf')
-	cloest_robot = None
-	for c in crewmates:
+    smallest_distance = float('inf')
+    closest_robot = None
+    for c in crewmates:
 
-		crewmate_msg = rospy.wait_for_message("/" + c + "/odom", Odometry, timeout)
-		cx = msg2.pose.pose.position.x
-    	cY = msg2.pose.pose.position.y
-		dist = np.sqrt((ix - cx)**2 + (iy - cy)**2) #manhanttan distance
+        crewmate_msg = rospy.wait_for_message("/" + c + "/odom", Odometry, timeout)
+        cx = crewmate_msg.pose.pose.position.x
+        cy = crewmate_msg.pose.pose.position.y
+        dist = np.sqrt((ix - cx)**2 + (iy - cy)**2)
 
-		if dist < smallest_distance:
-			smallest_distance = dist
-			cloest_robot = c
+        if dist < smallest_distance:
+            smallest_distance = dist
+            closest_robot = c
+    print(closest_robot)
 
-	return cloest_robot, position
+    return closest_robot
 
 
 def kill_nearest_robot():
-	return
+    return
+

@@ -34,14 +34,12 @@ def _get_movements_8n():
 def a_star(start_m, goal_m, gmap, movement='8N', occupancy_cost_factor=3):
     """
     A* for 2D occupancy grid.
-
     :param start_m: start node (x, y) in meters
     :param goal_m: goal node (x, y) in meters
     :param gmap: the grid map
     :param movement: select between 4-connectivity ('4N') and 8-connectivity ('8N', default)
     :param occupancy_cost_factor: a number the will be multiplied by the occupancy probability
         of a grid map cell to give the additional movement cost to this cell (default: 3).
-
     :return: a tuple that contains: (the resulting path in meters, the resulting path in data array indices)
     """
 
@@ -58,8 +56,7 @@ def a_star(start_m, goal_m, gmap, movement='8N', occupancy_cost_factor=3):
     # add start node to front
     # front is a list of (total estimated cost to goal, total cost from start to node, node, previous node)
     start_node_cost = 0
-    print("Start X:"+ str(start_m[0]))
-    print("Goal X:" + str(goal_m[0]))
+
     start_node_estimated_cost_to_goal = dist2d(start, goal) + start_node_cost #+ 10*(start_m[0]-goal_m[0]) + 10*(start_m[1]-goal_m[1])
     front = [(start_node_estimated_cost_to_goal, start_node_cost, start, None)]
 
