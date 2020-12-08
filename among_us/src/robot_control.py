@@ -83,10 +83,6 @@ def controller(robot_frame, target_frame):
 
       last_translation_x_error = translation_x_error
       last_rotation_error = rotation_error
-
-      if robot_frame == "robot7":
-        print(abs(trans.transform.translation.x) + abs(trans.transform.translation.y))
-
       if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .2: 
         K2 = 2
         publish_task_update(robot_frame, False, True)
@@ -107,9 +103,7 @@ def controller(robot_frame, target_frame):
       max_translation_speed = 1
       if K2 > .1:
         K2 = K2 * .97
-      if robot_frame == "robot7":
-        print(K2)
-
+  
 
 
       if abs(rotation_error) > .1:

@@ -205,20 +205,20 @@ class OccupancyGridMap:
         return x, y
 
 
-    def occupancy_cost(occupancy_cost_factor, x_index, y_index):
-        x_index, y_index = point_idx
+    def occupancy_cost(self, occupancy_cost_factor, point_idx):
+        xidx, yidx = point_idx
         rng = 2
         count = 0
         for d in range(0, rng + 1):
-            x_left = (x_index - d, y_index)
-            x_down = (x_index, y_index - d)
-            x_right = (x_index + d, y_index)
-            x_up = (x_index, y_index + d)
-            x_left_up = (x_index - d, y_index + d)
-            x_left_down = (x_index - d, y_index - d)
-            x_right_up = (x_index + d, y_index + d)
-            x_right_down = (x_index + d, y_index - d)
-            data = self.get_data_idx((x_index, y_index)) 
+            x_left = (xidx - d, yidx)
+            x_down = (xidx, yidx - d)
+            x_right = (xidx + d, yidx)
+            x_up = (xidx, yidx + d)
+            x_left_up = (xidx - d, yidx + d)
+            x_left_down = (xidx - d, yidx - d)
+            x_right_up = (xidx + d, yidx + d)
+            x_right_down = (xidx + d, yidx - d)
+            data = self.get_data_idx((xidx, yidx)) 
             data_left = self.get_data_idx(x_left)
             data_down = self.get_data_idx(x_down)
             data_right = self.get_data_idx(x_right)
@@ -231,9 +231,9 @@ class OccupancyGridMap:
             for i in [x >= self.occupancy_threshold for x in points]:
                 if i:
                     count += 1
-        print(count*occupancy_cost_factor)
-        return count * occupancy_cost_factor
-        
+
+        return 2 * count * occupancy_cost_factor
+
     def plot(self, alpha=1, min_val=0, origin='lower'):
         """
         plot the grid map

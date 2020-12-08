@@ -176,7 +176,7 @@ if __name__ == '__main__':
     robot4Tasks = ["task8", "task9", "task4", "task2"]
     robot5Tasks = ["task9", "task8", "task3", "task6"]
     robot6Tasks = ["task10", "task6", "task1", "task8"]
-    robot7Tasks = ["task1", "task4", "task5", "task10"]
+    robot7Tasks = ["task4", "task1", "task5", "task10"]
 
     initialize = True
 
