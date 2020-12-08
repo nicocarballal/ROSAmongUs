@@ -218,7 +218,7 @@ class OccupancyGrid2d(object):
     # Callback to process sensor measurements.
     def SensorCallback(self, msg, args):
         sensor_frame = args
-        print(sensor_frame)
+
         if not self._initialized:
             rospy.logerr("%s: Was not initialized.", self._name)
             return
@@ -227,7 +227,7 @@ class OccupancyGrid2d(object):
         try:
             pose = self._tf_buffer.lookup_transform(
                 self._fixed_frame, sensor_frame, rospy.Time())
-            print(pose)
+    
         except (tf2_ros.LookupException,
                 tf2_ros.ConnectivityException,
                 tf2_ros.ExtrapolationException):
@@ -316,6 +316,7 @@ class OccupancyGrid2d(object):
         return np.log(p / (1.0 - p))
 
     def LogOddsToProbability(self, l):
+        l = l.astype('float128')
         return 1.0 / (1.0 + np.exp(-l))
 
     # Colormap to take log odds at a voxel to a RGBA color.

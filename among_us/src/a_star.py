@@ -58,8 +58,6 @@ def a_star(start_m, goal_m, gmap, movement='8N', occupancy_cost_factor=3):
     # add start node to front
     # front is a list of (total estimated cost to goal, total cost from start to node, node, previous node)
     start_node_cost = 0
-    print("Start X:"+ str(start_m[0]))
-    print("Goal X:" + str(goal_m[0]))
     start_node_estimated_cost_to_goal = dist2d(start, goal) + start_node_cost #+ 10*(start_m[0]-goal_m[0]) + 10*(start_m[1]-goal_m[1])
     front = [(start_node_estimated_cost_to_goal, start_node_cost, start, None)]
 
