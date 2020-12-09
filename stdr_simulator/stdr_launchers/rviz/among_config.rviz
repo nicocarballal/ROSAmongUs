@@ -48,6 +48,14 @@ Visualization Manager:
       Plane: XY
       Plane Cell Count: 40
       Reference Frame: <Fixed Frame>
+      Value: 
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: game_ending_text
+      Name: Marker
+      Namespaces:
+        map: true
+      Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true

@@ -5,26 +5,30 @@ from nav_msgs.msg import Path
 import time
 from time import sleep
 import sys 
+import re
+from ast import literal_eval
 
 def path_publisher(robot_name):
-	
+    
 
     while not rospy.is_shutdown():
-    	robotPath = rospy.get_param(robot_name + '/path')
-		robotPath = robotPath.split()
+   
+        robotPath = rospy.get_param(robot_name + '/path')
 
-		if len(robotPath) == 0:
-			sleep(1)
-			continue
+        robotPath = literal_eval(robotPath)
 
+
+        if len(robotPath) == 0:
+            sleep(1)
+            continue
+		
+	
         pub = rospy.Publisher(robot_name + '/path', Path, queue_size=10)
 
         i = 1
 
         path = Path()
-
-        path_ = [(1,2), (2,3)]
-        for tup in path_:
+        for tup in robotPath:
             newPoint = Point()
             newPoint.x = tup[0]
             newPoint.y = tup[1]
@@ -43,7 +47,7 @@ def path_publisher(robot_name):
             Header()
             i+=1
             newHeader.stamp = rospy.Time()
-            newHeader.frame_id = ""
+            newHeader.frame_id = "world"
             newPoseStamped.pose = newPose
             newPoseStamped.header = newHeader
             path.poses.append(newPoseStamped)
@@ -51,10 +55,12 @@ def path_publisher(robot_name):
         newPathHeader = Header()
         newPathHeader.seq = i
         newPathHeader.stamp = rospy.Time()
-        newPathHeader.frame_id = ""
+        newPathHeader.frame_id = "world"
         path.header = newPathHeader
 
         pub.publish(path)
+
+        sleep(1)
 
 if __name__ == '__main__':
     rospy.init_node('path_publisher')

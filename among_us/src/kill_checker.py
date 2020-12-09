@@ -22,22 +22,7 @@ import geometry_msgs
 from among_us.msg import RobotTaskUpdate
 from a_star_function import a_star_function
 import numpy as np
-
-
-
-#Define the method which contains the main functionality of the node.
-# Function to convert   
-def listToString(s):  
-    
-    # initialize an empty string 
-    str1 = ""  
-    
-    # traverse in the string   
-    for ele in s:  
-        str1 += ele + " "   
-    
-    # return string   
-    return str1  
+from utils import listToString
         
 def initialize():
     print('Give the crewmates a 30 second head start')

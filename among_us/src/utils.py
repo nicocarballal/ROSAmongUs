@@ -69,3 +69,23 @@ def plot_path(path):
     plt.plot(goal_x, goal_y, 'go')
 
     plt.show()
+
+# Function to convert   
+def listToString(s):  
+    
+    # initialize an empty string 
+    str1 = ""  
+    
+    # traverse in the string   
+    for ele in s:  
+        str1 += ele + " "   
+    
+    # return string   
+    return str1  
+
+# Function to convert   
+def tupleListToString(s):
+    str1 = str(s)
+    str1 = ", ".join("(%s,%s)" % tup for tup in s)
+    str1 = "[" + str1 + "]"
+    return str1
