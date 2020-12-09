@@ -41,7 +41,7 @@ def listToString(s):
         
 def initialize():
     print('Give the crewmates a 30 second head start')
-    sleep(30)
+    sleep(5)
     while not rospy.is_shutdown():
         kill_checker()
 

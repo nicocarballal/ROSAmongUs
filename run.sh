@@ -31,5 +31,6 @@ python among_us/src/robot_control.py robot5 &
 python among_us/src/robot_control.py robot6 &
 python among_us/src/robot_control.py robot7 &
 python among_us/src/kill_checker.py &
+python among_us/src/game_ending_checker.py &
 
 #python among_us/src/robot_control1.py &

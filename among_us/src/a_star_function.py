@@ -62,7 +62,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
 
         path, path_px = a_star(start_node, goal_node, gmap, movement='4N')
         
-        
+        '''
         
  
         gmap.plot()
@@ -80,7 +80,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
             plt.plot(goal_node_px[0], goal_node_px[1], 'go')
 
         plt.show()
-        
+        '''
 
         
         path = path_cleaner(path)
@@ -109,7 +109,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
 
         path, path_px = a_star(start_node, goal_node, gmap, movement='4N')
 
-        
+        '''
         
         gmap.plot()
         
@@ -129,7 +129,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
 
         plt.show()
         
-        
+        '''
         
         path = path_cleaner(path)
 

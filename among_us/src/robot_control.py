@@ -98,7 +98,7 @@ def controller(robot_frame, target_frame):
       control_command = Twist()
 
       
-      max_rotation_speed = .5
+      max_rotation_speed = .3
       max_translation_speed = 1
       if K2 > .2:
         K2 = K2 * .97

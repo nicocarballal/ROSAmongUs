@@ -24,6 +24,7 @@ import math
 import time
 from time import sleep
 from imposter_search import find_nearest_robot, kill_nearest_robot
+from kill_checker import listToString
 
 
 
@@ -34,7 +35,7 @@ from imposter_search import find_nearest_robot, kill_nearest_robot
 def taskmaster():
     robot_name = sys.argv[1]
     if robot_name == 'robot6' or robot_name == 'robot7':
-      sleep(20)
+      sleep(100)
     while not rospy.is_shutdown():
       if robot_name == 'robot6' or robot_name == 'robot7':
         task_manager_imposter(robot_name)
@@ -226,6 +227,15 @@ def task_manager(robot_name):
 
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
       return 
+
+    if not finishedTasks[robot_name]:
+      if len(robotTasks[robot_name]) == 0 and len(robotPaths[robot_name]) == 0:
+        robots_with_tasks = rospy.get_param('robots_with_tasks')
+        robots_with_tasks = robots_with_tasks.split()  
+        robots_with_tasks.remove(robot_name)
+        finishedTasks[robot_name] = True
+        rospy.set_param('robots_with_tasks', listToString(robots_with_tasks))
+
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = "map_static"
@@ -263,8 +273,19 @@ if __name__ == '__main__':
     robot3Tasks = ["task2", "task1", "task8", "task4"]
     robot4Tasks = ["task8", "task9", "task4", "task2"]
     robot5Tasks = ["task4", "task8", "task3", "task6"]
+    '''
+    robot0Tasks = ["task1"]
+    robot1Tasks = ["task1"]
+    robot2Tasks = ["task1"]
+    robot3Tasks = ["task1"]
+    robot4Tasks = ["task1"]
+    robot5Tasks = ["task1"]
+    '''
     robot6Tasks = ["task10", "task6", "task1", "task8"]
     robot7Tasks = ["task9", "task2", "task5", "task10"]
+
+    finishedTasks = {"robot0": False, "robot1": False, "robot2": False, "robot3": False, "robot4": False, 
+    "robot5": False}
 
     initialize = True
 
