@@ -100,7 +100,7 @@ def controller(robot_frame, target_frame):
       
       max_rotation_speed = .5
       max_translation_speed = 1
-      if K2 > .1:
+      if K2 > .2:
         K2 = K2 * .97
   
 

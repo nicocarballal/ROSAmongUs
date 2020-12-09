@@ -47,7 +47,7 @@ def task_manager_imposter(robot_name):
       try:
         #find nearest robot
         timeout = 1
-
+        print(imposterPaths)
         # wait for message from imposter and target
         imposterX = rospy.get_param(robot_name + "/positionX")
         imposterY = rospy.get_param(robot_name + "/positionY")
@@ -55,8 +55,8 @@ def task_manager_imposter(robot_name):
         ## if robot doesn't have a target
 
         # THIS LOOP ONLY KILLS WHEN AT A WAYPOINT
-        if taskUpdate_msg.need_path_update:
-          print(imposterPaths)
+        
+        if taskUpdate_msg.need_path_update: 
           if len(imposterPaths[robot_name]) > 0:
             imposterPaths[robot_name].pop(0)
             pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
@@ -66,7 +66,8 @@ def task_manager_imposter(robot_name):
             updateMsg.need_path_update = False
             pub_update.publish(updateMsg)
           elif len(alive_crewmates) > 0:
-            target = find_nearest_robot(robot_name, alive_crewmates)
+            target = find_nearest_robot(robot_name)
+            print("Target!!!:" + target)
             targetX = rospy.get_param(target + "/positionX")
             targetY = rospy.get_param(target + "/positionY")
             X = imposterX
@@ -107,12 +108,12 @@ def task_manager_imposter(robot_name):
       except Exception as e:
         ### Check that there is an alive crewmate if the imposter has nowhere to go
           if len(alive_crewmates) > 0 and len(imposterPaths[robot_name]) == 0:
-          
             X = imposterX
             Y = imposterY
             X = round(X*4)/4
             Y = round(Y*4)/4
-            target = find_nearest_robot(robot_name, alive_crewmates)
+            target = find_nearest_robot(robot_name)
+            print("Target!!!:" + target)
             targetX = rospy.get_param(target + "/positionX")
             targetY = rospy.get_param(target + "/positionY")
             targetX = round(targetX*4)/4

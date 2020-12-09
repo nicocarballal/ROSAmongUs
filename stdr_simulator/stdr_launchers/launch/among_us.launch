@@ -21,6 +21,7 @@
 	<arg name="robot5y" default="10" />
 	<arg name="robot6y" default="9" />
 	<arg name="robot7y" default="11" />
+	<arg name="crewmates" default="robot0 robot1 robot2 robot3 robot4 robot5" />
 	
 
 
@@ -47,6 +48,7 @@
 	    <param name="robot6/positionY" value="$(arg robot6y)" />
 	    <param name="robot7/positionX" value="$(arg robot7x)" />
 	    <param name="robot7/positionY" value="$(arg robot7y)" />
+	    <param name="alive_crewmates" value="$(arg crewmates)" />
 	    
 
 	<node pkg="tf" 

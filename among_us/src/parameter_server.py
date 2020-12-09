@@ -32,27 +32,19 @@ from imposter_search import find_nearest_robot, kill_nearest_robot
 #Define the method which contains the main functionality of the node.
 
 
-def callback(message, args):
-    robot_name = args
-    
-
-    robotX = message.pose.pose.position.x
-    robotY = message.pose.pose.position.y
-    rospy.set_param('/' + robot_name + '/positionX', robotX)
-    rospy.set_param('/' + robot_name + '/positionY', robotY)
-    
 def parameter_server(robot_name):
 
     #Create a new instance of the rospy.Subscriber object which we can 
     #use to receive messages of type std_msgs/String from the topic /chatter_talk.
     #Whenever a new message is received, the method callback() will be called
     #with the received message as its first argument.
-    rospy.Subscriber("/" + robot_name + "/odom", Odometry, callback, (robot_name))
+    while not rospy.is_shutdown():
+	    message = rospy.wait_for_message("/" + robot_name + "/odom", Odometry)
 
-
-    #Wait for messages to arrive on the subscribed topics, and exit the node
-    #when it is killed with Ctrl+C
-    rospy.spin()
+	    robotX = message.pose.pose.position.x
+	    robotY = message.pose.pose.position.y
+	    rospy.set_param('/' + robot_name + '/positionX', robotX)
+	    rospy.set_param('/' + robot_name + '/positionY', robotY)
 
 
 

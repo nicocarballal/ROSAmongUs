@@ -13,8 +13,9 @@ from time import sleep
 from a_star_function import a_star_function
 from nav_msgs.msg import Odometry
 
-def find_nearest_robot(imposter, crewmates):
-
+def find_nearest_robot(imposter):
+    crewmates = rospy.get_param('alive_crewmates')
+    crewmates = crewmates.split()
     timeout = 1
     time1 = time.time()
     ix = rospy.get_param(imposter + "/positionX")
