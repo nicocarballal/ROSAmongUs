@@ -40,14 +40,15 @@ def listToString(s):
     return str1  
         
 def initialize():
+    print('Give the crewmates a 30 second head start')
+    sleep(30)
     while not rospy.is_shutdown():
         kill_checker()
 
 def kill_checker():
     print('kill checker running')
 
-    print('Give the crewmates a 30 second head start')
-    sleep(30)
+
     alive_crewmates = rospy.get_param('alive_crewmates')
 
     alive_crewmates = alive_crewmates.split()

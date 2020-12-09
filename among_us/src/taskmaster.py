@@ -34,7 +34,7 @@ from imposter_search import find_nearest_robot, kill_nearest_robot
 def taskmaster():
     robot_name = sys.argv[1]
     if robot_name == 'robot6' or robot_name == 'robot7':
-      sleep(45)
+      sleep(20)
     while not rospy.is_shutdown():
       if robot_name == 'robot6' or robot_name == 'robot7':
         task_manager_imposter(robot_name)
@@ -67,7 +67,10 @@ def task_manager_imposter(robot_name):
             pub_update.publish(updateMsg)
           elif len(alive_crewmates) > 0:
             target = find_nearest_robot(robot_name)
-            print("Target!!!:" + target)
+            if robot_name == 'robot6':
+              rospy.set_param('imposter1/target', target)
+            else:
+              rospy.set_param('imposter2/target', target)
             targetX = rospy.get_param(target + "/positionX")
             targetY = rospy.get_param(target + "/positionY")
             X = imposterX
@@ -113,7 +116,10 @@ def task_manager_imposter(robot_name):
             X = round(X*4)/4
             Y = round(Y*4)/4
             target = find_nearest_robot(robot_name)
-            print("Target!!!:" + target)
+            if robot_name == 'robot6':
+              rospy.set_param('imposter1/target', target)
+            else:
+              rospy.set_param('imposter2/target', target)
             targetX = rospy.get_param(target + "/positionX")
             targetY = rospy.get_param(target + "/positionY")
             targetX = round(targetX*4)/4
@@ -147,7 +153,8 @@ def task_manager_imposter(robot_name):
 def task_manager(robot_name):
   try: 
     timeout = 1
-    msg2 = rospy.wait_for_message("/" + robot_name + "/odom", Odometry, timeout)
+    crewmateX = rospy.get_param(robot_name + "/positionX")
+    crewmateY = rospy.get_param(robot_name + "/positionY")
     msg1 = rospy.wait_for_message("/" + robot_name + "/taskUpdate", RobotTaskUpdate, timeout)
     
     
@@ -161,8 +168,8 @@ def task_manager(robot_name):
         updateMsg.need_path_update = False
         pub_update.publish(updateMsg)
       elif len(robotTasks[robot_name]) > 0:
-        X = msg2.pose.pose.position.x
-        Y = msg2.pose.pose.position.y
+        X = crewmateX
+        Y = crewmateY
         X = round(X*4)/4
         Y = round(Y*4)/4
         taskX = taskLocations[robotTasks[robot_name][0]][0]
@@ -175,13 +182,7 @@ def task_manager(robot_name):
         ## don't want the controller to go anywhere new
         return
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
-      return 
-
-
-    X = msg2.pose.pose.position.x
-    Y = msg2.pose.pose.position.y
-    taskX = taskLocations[robotTasks[robot_name][0]][0]
-    taskY = taskLocations[robotTasks[robot_name][0]][1]
+      return
 
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
@@ -203,8 +204,8 @@ def task_manager(robot_name):
 
   except Exception as e:
     if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
-      X = msg2.pose.pose.position.x
-      Y = msg2.pose.pose.position.y
+      X = crewmateX
+      Y = crewmateY
       X = round(X*4)/4
       Y = round(Y*4)/4
       taskX = taskLocations[robotTasks[robot_name][0]][0]
@@ -214,10 +215,8 @@ def task_manager(robot_name):
       robotPaths[robot_name].pop(0)
       robotTasks[robot_name].pop(0)
     if len(robotTasks[robot_name]) > 0 and len(robotPaths[robot_name]) == 0:
-        X = msg2.pose.pose.position.x
-        Y = msg2.pose.pose.position.y
-        X = round(X*4)/4
-        Y = round(Y*4)/4
+        X = crewmateX
+        Y = crewmateY
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY, robot_name)
@@ -258,14 +257,14 @@ if __name__ == '__main__':
     "task6": (9, 7.5), "task7": (15.5, 5), "task8": (16, 8), "task9": (22, 7), "task10": (18,10)}
 
 
-    robot0Tasks = ["task1", "task7", "task4", "task3"]
+    robot0Tasks = ["task1", "task6", "task4", "task3"]
     robot1Tasks = ["task5", "task3", "task2", "task9"]
     robot2Tasks = ["task7", "task5", "task10", "task1"]
-    robot3Tasks = ["task7", "task1", "task2", "task4"]
+    robot3Tasks = ["task2", "task1", "task8", "task4"]
     robot4Tasks = ["task8", "task9", "task4", "task2"]
-    robot5Tasks = ["task9", "task8", "task3", "task6"]
+    robot5Tasks = ["task4", "task8", "task3", "task6"]
     robot6Tasks = ["task10", "task6", "task1", "task8"]
-    robot7Tasks = ["task4", "task1", "task5", "task10"]
+    robot7Tasks = ["task9", "task2", "task5", "task10"]
 
     initialize = True
 

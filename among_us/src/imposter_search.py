@@ -29,8 +29,13 @@ def find_nearest_robot(imposter):
         dist = np.sqrt((ix - cx)**2 + (iy - cy)**2)
 
         if dist < smallest_distance:
-            smallest_distance = dist
-            closest_robot = c
+            if imposter == 'robot6':
+                otherTarget = rospy.get_param('imposter2/target')
+            else:
+                otherTarget = rospy.get_param('imposter1/target')
+            if c != otherTarget:
+                smallest_distance = dist
+                closest_robot = c
     time2 = time.time()
 
     return closest_robot
