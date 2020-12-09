@@ -131,6 +131,7 @@ def task_manager(robot_name):
         Y = round(Y*4)/4
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
+        print(robot_name, "im in task manager")
         path = a_star_function(X, Y, taskX, taskY)
         robotPaths[robot_name] = path
         robotPaths[robot_name].pop(0)
@@ -175,7 +176,6 @@ if __name__ == '__main__':
     robot3Tasks = ["task7", "task1", "task2", "task4"]
     robot4Tasks = ["task8", "task9", "task4", "task2"]
     robot5Tasks = ["task9", "task8", "task3", "task6"]
-    #robot6Tasks = ["task10", "task6", "task1", "task8"]
     robot7Tasks = ["task1", "task4", "task5", "task10"]
 
     initialize = True

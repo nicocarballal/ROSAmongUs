@@ -28,27 +28,29 @@ def imposter_master():
 def imposter_manager(robot_name):
     try:
         #find nearest robot
-        print('In ImposterMaster')
         timeout = 1
         if not targets[robot_name]:
             target = find_nearest_robot(robot_name, alive_crewmates)
             print(target)
             targets[robot_name] = target
 
+            print('message')
             imposter_msg = rospy.wait_for_message("/" + robot_name + "/odom", Odometry, timeout)
             target_msg = rospy.wait_for_message("/" + target + "/odom", Odometry, timeout)
-
+            print('I made it')
             i_x = imposter_msg.pose.pose.position.x
             i_y = imposter_msg.pose.pose.position.y
             i_x = round(i_x*4)/4
-            i_y = round(i_x*4)/4
+            i_y = round(i_y*4)/4
 
             t_x = target_msg.pose.pose.position.x
             t_y = target_msg.pose.pose.position.y
             t_x = round(t_x*4)/4
             t_y = round(t_y*4)/4
 
+            print('about to get')
             path = a_star_function(i_x, i_y, t_x, t_y)
+            print(path)
             imposterPaths[robot_name] = path
             pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
 
@@ -81,12 +83,13 @@ def imposter_manager(robot_name):
             #check if imposter is within killing range
             i_x = imposter_msg.pose.pose.position.x
             i_y = imposter_msg.pose.pose.position.y
-            print('third chance')
+            i_x = round(i_x*4)/4
+            i_y = round(i_x*4)/4
             t_x = target_msg.pose.pose.position.x
             t_y = target_msg.pose.pose.position.y
-            print('fourth chance')
-            print(i_x, i_y, t_x, t_y)
-            print(np.sqrt((i_x - t_x)**2 + (i_y - t_y)**2))
+            t_x = round(t_x*4)/4
+            t_y = round(t_y*4)/4
+
             if np.sqrt((i_x - t_x)**2 + (i_y - t_y)**2) < 1:
                 print('kill')
                 targets[robot_name] = None
