@@ -20,8 +20,8 @@ from time import sleep
 #Define the method which contains the main functionality of the node.
 
 
-def callback(message):
-
+def callback(message, args):
+  robot_name = args
   idx = robotArray.index(message.child_frame_id)
   marker = Marker()
   marker.header.frame_id = "world"
@@ -39,6 +39,16 @@ def callback(message):
   marker.scale.x = 0.35
   marker.scale.y = 0.35
   marker.scale.z = 0.35
+  if (random.randint(1,10) == 1):
+    if not robotKilled[robot_name]:
+      alive_crewmates = rospy.get_param('alive_crewmates')
+      alive_crewmates = alive_crewmates.split()
+      if robot_name not in alive_crewmates:
+        colorArray[idx][1] = .5
+        colorArray[idx][2] = .5
+        colorArray[idx][3] = .5
+        robotKilled[robot_name] = True
+  
   marker.color.a = colorArray[idx][0]# Don't forget to set the alpha!
   marker.color.r = colorArray[idx][1]
   marker.color.g = colorArray[idx][2]
@@ -62,14 +72,14 @@ def listener():
     #use to receive messages of type std_msgs/String from the topic /chatter_talk.
     #Whenever a new message is received, the method callback() will be called
     #with the received message as its first argument.
-    rospy.Subscriber("robot0/odom", Odometry, callback)
-    rospy.Subscriber("robot1/odom", Odometry, callback)
-    rospy.Subscriber("robot2/odom", Odometry, callback)
-    rospy.Subscriber("robot3/odom", Odometry, callback)
-    rospy.Subscriber("robot4/odom", Odometry, callback)
-    rospy.Subscriber("robot5/odom", Odometry, callback)
-    rospy.Subscriber("robot6/odom", Odometry, callback)
-    rospy.Subscriber("robot7/odom", Odometry, callback)
+    rospy.Subscriber("robot0/odom", Odometry, callback, ('robot0'))
+    rospy.Subscriber("robot1/odom", Odometry, callback, ('robot1'))
+    rospy.Subscriber("robot2/odom", Odometry, callback, ('robot2'))
+    rospy.Subscriber("robot3/odom", Odometry, callback, ('robot3'))
+    rospy.Subscriber("robot4/odom", Odometry, callback, ('robot4'))
+    rospy.Subscriber("robot5/odom", Odometry, callback, ('robot5'))
+    rospy.Subscriber("robot6/odom", Odometry, callback, ('robot6'))
+    rospy.Subscriber("robot7/odom", Odometry, callback, ('robot7'))
 
     #Wait for messages to arrive on the subscribed topics, and exit the node
     #when it is killed with Ctrl+C
@@ -81,6 +91,8 @@ if __name__ == '__main__':
     print("RVIZ Robot Tracking Initiated")
     robotArray = ["robot0", "robot1", "robot2", "robot3", "robot4", "robot5", "robot6", "robot7"]
     colorArray= [[1, 0, 0, .7], [1, .1, 1, .1], [1, 0, 0, 0], [1, .2, 1, 1], [1,0.9,0,0], [1,.1,0.5,0.1], [1,0.8,0.3,0.8], [1,0.4,0.2,0]]
+    robotKilled = {"robot0": False, "robot1": False, "robot2": False, "robot3": False, "robot4": False, 
+    "robot5": False, "robot6": True, "robot7": True}
 
     markerArray = MarkerArray()
     #Run this program as a new node in the ROS computation graph

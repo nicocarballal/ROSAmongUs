@@ -34,7 +34,7 @@ from imposter_search import find_nearest_robot, kill_nearest_robot
 def taskmaster():
     robot_name = sys.argv[1]
     if robot_name == 'robot6' or robot_name == 'robot7':
-      sleep(10)
+      sleep(45)
     while not rospy.is_shutdown():
       if robot_name == 'robot6' or robot_name == 'robot7':
         task_manager_imposter(robot_name)

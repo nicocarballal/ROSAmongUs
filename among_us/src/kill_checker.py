@@ -45,6 +45,9 @@ def initialize():
 
 def kill_checker():
     print('kill checker running')
+
+    print('Give the crewmates a 30 second head start')
+    sleep(30)
     alive_crewmates = rospy.get_param('alive_crewmates')
 
     alive_crewmates = alive_crewmates.split()
@@ -56,9 +59,9 @@ def kill_checker():
     for crewmate in alive_crewmates:
         X = rospy.get_param(crewmate + '/positionX')
         Y = rospy.get_param(crewmate + '/positionY')
-        dist6 = np.sqrt((X - imposter6X)**2 + (Y - imposter6X)**2)
-        dist7 = np.sqrt((X - imposter7X)**2 + (Y - imposter7X)**2)
-        if dist6 < 5 or dist7 < 5:
+        dist6 = np.sqrt((X - imposter6X)**2 + (Y - imposter6Y)**2)
+        dist7 = np.sqrt((X - imposter7X)**2 + (Y - imposter7Y)**2)
+        if dist6 < 1 or dist7 < 1:
             print("KILLLLLLLLLLLLL")
             alive_crewmates.remove(crewmate)
             rospy.set_param('alive_crewmates', listToString(alive_crewmates))
