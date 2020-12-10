@@ -76,10 +76,10 @@ def task_manager_imposter(robot_name):
             targetY = rospy.get_param(target + "/positionY")
             X = imposterX
             Y = imposterY
-            X = round(X*4)/4
-            Y = round(Y*4)/4
-            targetX = round(targetX*4)/4
-            targetY = round(targetY*4)/4
+            X = round(X*2)/2
+            Y = round(Y*2)/2
+            targetX = round(targetX*2)/2
+            targetY = round(targetY*2)/2
             path = a_star_function(X, Y, targetX, targetY, robot_name)
             imposterPaths[robot_name] = path
             imposterPaths[robot_name].pop(0)
@@ -113,8 +113,8 @@ def task_manager_imposter(robot_name):
           if len(alive_crewmates) > 0 and len(imposterPaths[robot_name]) == 0:
             X = imposterX
             Y = imposterY
-            X = round(X*4)/4
-            Y = round(Y*4)/4
+            X = round(X*2)/2
+            Y = round(Y*2)/2
             target = find_nearest_robot(robot_name)
             if robot_name == 'robot6':
               rospy.set_param('imposter1/target', target)
@@ -122,8 +122,8 @@ def task_manager_imposter(robot_name):
               rospy.set_param('imposter2/target', target)
             targetX = rospy.get_param(target + "/positionX")
             targetY = rospy.get_param(target + "/positionY")
-            targetX = round(targetX*4)/4
-            targetY = round(targetY*4)/4
+            targetX = round(targetX*2)/2
+            targetY = round(targetY*2)/2
             path = a_star_function(X, Y, targetX, targetY, robot_name)
             imposterPaths[robot_name] = path
             imposterPaths[robot_name].pop(0)
@@ -169,8 +169,8 @@ def task_manager(robot_name):
       elif len(robotTasks[robot_name]) > 0:
         X = crewmateX
         Y = crewmateY
-        X = round(X*4)/4
-        Y = round(Y*4)/4
+        X = round(X*2)/2
+        Y = round(Y*2)/2
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY, robot_name)
@@ -205,8 +205,8 @@ def task_manager(robot_name):
     if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
       X = crewmateX
       Y = crewmateY
-      X = round(X*4)/4
-      Y = round(Y*4)/4
+      X = round(X*2)/2
+      Y = round(Y*2)/2
       taskX = taskLocations[robotTasks[robot_name][0]][0]
       taskY = taskLocations[robotTasks[robot_name][0]][1]
       path = a_star_function(X, Y, taskX, taskY, robot_name)
