@@ -62,7 +62,7 @@ def path_publisher(robot_name):
             '''
             path.header = newPathHeader
             pub.publish(path)
-            sleep(1)
+            sleep(5)
         except Exception as e:
             print(e)
 

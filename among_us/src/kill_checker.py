@@ -48,7 +48,7 @@ def kill_checker():
             print("KILLLLLLLLLLLLL")
             alive_crewmates.remove(crewmate)
             rospy.set_param('alive_crewmates', listToString(alive_crewmates))
-    sleep(1)
+    sleep(3)
 
 
 

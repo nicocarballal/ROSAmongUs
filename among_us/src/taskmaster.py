@@ -49,7 +49,6 @@ def task_manager_imposter(robot_name):
       try:
         #find nearest robot
         timeout = 1
-        print(imposterPaths)
         # wait for message from imposter and target
         imposterX = rospy.get_param(robot_name + "/positionX")
         imposterY = rospy.get_param(robot_name + "/positionY")
@@ -82,7 +81,6 @@ def task_manager_imposter(robot_name):
             targetX = round(targetX*4)/4
             targetY = round(targetY*4)/4
             path = a_star_function(X, Y, targetX, targetY, robot_name)
-            print(path)
             imposterPaths[robot_name] = path
             imposterPaths[robot_name].pop(0)
             targets[robot_name] = target
@@ -127,7 +125,6 @@ def task_manager_imposter(robot_name):
             targetX = round(targetX*4)/4
             targetY = round(targetY*4)/4
             path = a_star_function(X, Y, targetX, targetY, robot_name)
-            print(path)
             imposterPaths[robot_name] = path
             imposterPaths[robot_name].pop(0)
             targets[robot_name] = target
@@ -236,6 +233,7 @@ def task_manager(robot_name):
         robots_with_tasks.remove(robot_name)
         finishedTasks[robot_name] = True
         rospy.set_param('robots_with_tasks', listToString(robots_with_tasks))
+        return 
 
     pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
     t = geometry_msgs.msg.TransformStamped()
@@ -263,7 +261,7 @@ if __name__ == '__main__':
     #string. This randomly generated name means we can start multiple
     #copies of this node without having multiple nodes with the same
     #name, which ROS doesn't allow.
-    print("Taskmaster initiated.")
+    print("Taskmaster initiated.")  
     taskLocations = {"task1": (12, 12), "task2": (8, 5), "task3": (12, 1), "task4": (15,1), "task5": (1,6.5), 
     "task6": (9, 7.5), "task7": (15.5, 5), "task8": (16, 8), "task9": (22, 7), "task10": (18,10)}
 

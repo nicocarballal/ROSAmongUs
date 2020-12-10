@@ -97,7 +97,7 @@ Visualization Manager:
       Name: Path
       Line Style: Billboards
       Line Width: 0.3
-      Color: 0; 0; 0
+      Color: 50; 50; 50
       Value: true
     - Class: rviz/Path
       Enabled: true
@@ -129,7 +129,7 @@ Visualization Manager:
       Name: Path
       Line Style: Billboards
       Line Width: 0.3
-      Color: 204; 76.5; 204
+      Color: 204; 76; 204
       Value: true
     - Class: rviz/Path
       Enabled: true
