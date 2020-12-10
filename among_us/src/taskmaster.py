@@ -161,16 +161,18 @@ def task_manager(robot_name):
         updateMsg.need_path_update = False
         pub_update.publish(updateMsg)
       elif len(robotTasks[robot_name]) > 0:
+        print("hello")
+        sleep(1)
         lasermsg = rospy.wait_for_message("/" + robot_name + "/laser_0", LaserScan, 10)
         print("recieved laser message")
         ranges = lasermsg.ranges
-        mindist = min([i for i in lasermsg.ranges if i > 0.05])
+        mindist = min([i for i in lasermsg.ranges if i > 0.15])
         minindex = ranges.index(mindist)
         if minindex < 100:
             ranges = ranges[minindex + 567:] + ranges
         elif minindex > 567:
             ranges = ranges + ranges[:100]
-        ranges = [i for i in ranges if i < mindist + .1]
+        ranges = [i for i in ranges if i < mindist + .2]
         if len(ranges)%2 == 0:
             ranges = ranges[:len(ranges)-1]
         print("DEBUG RANGES", len(ranges))
@@ -188,15 +190,15 @@ def task_manager(robot_name):
         flat = dummy_array(mindist, len(ranges))
         print("DEBUG:FLAT", len(flat))
         difference = np.asarray(flat) - np.asarray(ranges)
-        print(np.mean(difference))
-        if np.mean(difference) > 0:
-            print("This task is concave!")
+        if difference[0] and difference[len(difference)-1] < 0:
+            print(robot_name, "This task is convex!")
         else:
-            print("this task is convex!")
+            print(robot_name, "this task is concave!")
         X = crewmateX
         Y = crewmateY
         X = round(X*4)/4
         Y = round(Y*4)/4
+        print(robotTasks[robot_name])
         taskX = taskLocations[robotTasks[robot_name][0]][0]
         taskY = taskLocations[robotTasks[robot_name][0]][1]
         path = a_star_function(X, Y, taskX, taskY, robot_name)
