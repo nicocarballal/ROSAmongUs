@@ -290,8 +290,8 @@ if __name__ == '__main__':
     #copies of this node without having multiple nodes with the same
     #name, which ROS doesn't allow.
     print("Taskmaster initiated.")  
-    taskLocations = {"task1": (12, 12), "task2": (8, 5), "task3": (12, 1), "task4": (15,1), "task5": (1,6.5), 
-    "task6": (9, 7.5), "task7": (15.5, 5), "task8": (16, 8), "task9": (22, 7), "task10": (18,10)}
+    taskLocations = {"task1": (12, 12), "task2": (8.25, 5), "task3": (12, 1), "task4": (15,1), "task5": (1.25,6.5), 
+    "task6": (9, 7.5), "task7": (15.5, 5.5), "task8": (16.25, 7.75), "task9": (22.25, 7.25), "task10": (18,10)}
 
 
     robot0Tasks = ["task1", "task6", "task4", "task3"]
