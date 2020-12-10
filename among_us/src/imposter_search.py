@@ -13,29 +13,33 @@ from time import sleep
 from a_star_function import a_star_function
 from nav_msgs.msg import Odometry
 
-def find_nearest_robot(imposter, crewmates):
-    timeout = 0.3
-    imposter_msg = rospy.wait_for_message("/" + imposter + "/odom", Odometry, timeout)
-    ix = imposter_msg.pose.pose.position.x
-    iy = imposter_msg.pose.pose.position.y
+def find_nearest_robot(imposter):
+    crewmates = rospy.get_param('alive_crewmates')
+    crewmates = crewmates.split()
+    timeout = 1
+    time1 = time.time()
+    ix = rospy.get_param(imposter + "/positionX")
+    iy = rospy.get_param(imposter + "/positionY")
 
     smallest_distance = float('inf')
     closest_robot = None
     for c in crewmates:
-
-        crewmate_msg = rospy.wait_for_message("/" + c + "/odom", Odometry, timeout)
-        cx = crewmate_msg.pose.pose.position.x
-        cy = crewmate_msg.pose.pose.position.y
+        cx = rospy.get_param(c + "/positionX")
+        cy  = rospy.get_param(c + "/positionY")
         dist = np.sqrt((ix - cx)**2 + (iy - cy)**2)
 
         if dist < smallest_distance:
-            smallest_distance = dist
-            closest_robot = c
-    print(closest_robot)
+            if imposter == 'robot6':
+                otherTarget = rospy.get_param('imposter2/target')
+            else:
+                otherTarget = rospy.get_param('imposter1/target')
+            if c != otherTarget:
+                smallest_distance = dist
+                closest_robot = c
+    time2 = time.time()
 
     return closest_robot
 
 
 def kill_nearest_robot():
     return
-

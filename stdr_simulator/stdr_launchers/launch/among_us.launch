@@ -5,6 +5,27 @@
 	<arg name="x" default="10" />
 	<arg name="y" default="10" />
 	<arg name="theta" default="0" />
+	<arg name="robot0x" default="13" />
+	<arg name="robot1x" default="13" />
+	<arg name="robot2x" default="12" />
+	<arg name="robot3x" default="13" />
+	<arg name="robot4x" default="12" />
+	<arg name="robot5x" default="14" />
+	<arg name="robot6x" default="13" />
+	<arg name="robot7x" default="14" />
+	<arg name="robot0y" default="10" />
+	<arg name="robot1y" default="11" />
+	<arg name="robot2y" default="10" />
+	<arg name="robot3y" default="8" />
+	<arg name="robot4y" default="11" />
+	<arg name="robot5y" default="10" />
+	<arg name="robot6y" default="9" />
+	<arg name="robot7y" default="11" />
+	<arg name="crewmates" default="robot0 robot1 robot2 robot3 robot4 robot5" />
+	<arg name="imposter1target" default="None" />
+	<arg name="imposter2target" default="None" />
+	
+
 
 
 	<include file="$(find stdr_robot)/launch/robot_manager.launch" />
@@ -12,6 +33,27 @@
 	<node type="stdr_server_node" pkg="stdr_server" name="stdr_server" output="screen" args="$(find stdr_resources)/maps/among_us.yaml"/>
 
 	<node pkg="tf" type="static_transform_publisher" name="world2map" args="0 0 0 0 0 0  world map 100" />
+
+		<param name="robot0/positionX" value="$(arg robot0x)" />
+		<param name="robot0/positionY" value="$(arg robot0y)" />
+	    <param name="robot1/positionX" value="$(arg robot1x)" />
+	   	<param name="robot1/positionY" value="$(arg robot1y)" />
+	    <param name="robot2/positionX" value="$(arg robot2x)" />
+	    <param name="robot2/positionY" value="$(arg robot2y)" />
+	    <param name="robot3/positionX" value="$(arg robot3x)" />
+	    <param name="robot3/positionY" value="$(arg robot3y)" />
+	    <param name="robot4/positionX" value="$(arg robot4x)" />
+	    <param name="robot4/positionY" value="$(arg robot4y)" />
+	    <param name="robot5/positionX" value="$(arg robot5x)" />
+	    <param name="robot5/positionY" value="$(arg robot5y)" />
+	    <param name="robot6/positionX" value="$(arg robot6x)" />
+	    <param name="robot6/positionY" value="$(arg robot6y)" />
+	    <param name="robot7/positionX" value="$(arg robot7x)" />
+	    <param name="robot7/positionY" value="$(arg robot7y)" />
+	    <param name="alive_crewmates" value="$(arg crewmates)" />
+	    <param name="imposter1/target" value = "$(arg imposter1target)" />
+	    <param name="imposter2/target" value = "$(arg imposter2target)" />
+	    
 
 	<node pkg="tf" 
           	type="static_transform_publisher" 

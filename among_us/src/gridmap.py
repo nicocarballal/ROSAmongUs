@@ -4,7 +4,7 @@ from utils import png_to_ogm
 
 
 class OccupancyGridMap:
-    def __init__(self, data_array, cell_size, occupancy_threshold=0.8):
+    def __init__(self, data_array, cell_size, occupancy_threshold=0.1):
         """
         Creates a grid map
         :param data_array: a 2D array with a value of occupancy per cell (values from 0 - 1)
@@ -12,7 +12,6 @@ class OccupancyGridMap:
         :param occupancy_threshold: A threshold to determine whether a cell is occupied or free.
         A cell is considered occupied if its value >= occupancy_threshold, free otherwise.
         """
-
         self.data = data_array
         self.dim_cells = data_array.shape
         self.dim_meters = (self.dim_cells[1] * cell_size, self.dim_cells[0] * cell_size)
@@ -144,8 +143,10 @@ class OccupancyGridMap:
         :return: True if the given point is occupied, false otherwise
         """
         x_index, y_index = point_idx
-        l = 8
-        for d in range(1, l):
+        l = 1
+        points = 0
+        data = self.get_data_idx((x_index, y_index)) 
+        for d in range(1, l+1):
             x_left = (x_index - d, y_index)
             x_down = (x_index, y_index - d)
             x_right = (x_index + d, y_index)
@@ -154,7 +155,6 @@ class OccupancyGridMap:
             x_left_down = (x_index - d, y_index - d)
             x_right_up = (x_index + d, y_index + d)
             x_right_down = (x_index + d, y_index - d)
-            data = self.get_data_idx((x_index, y_index)) 
             data_left = self.get_data_idx(x_left)
             data_down = self.get_data_idx(x_down)
             data_right = self.get_data_idx(x_right)
@@ -164,7 +164,7 @@ class OccupancyGridMap:
             data_right_up = self.get_data_idx(x_right_up)
             data_right_down = self.get_data_idx(x_right_down)
             points = [data, data_left, data_down, data_right, data_up, data_right_down, data_right_up, data_left_down, data_left_up]
-            if any(x <= self.occupancy_threshold for x in points):
+            if any(x >= self.occupancy_threshold for x in points):
                 return True
         else:
             return False
@@ -204,12 +204,35 @@ class OccupancyGridMap:
 
         return x, y
 
+
+    def occupancy_cost(self, occupancy_cost_factor, point_idx):
+        xidx, yidx = point_idx
+        rng = 2
+        count = 0
+        data = self.get_data_idx((xidx, yidx)) 
+        for d in range(0, rng + 1):
+            x_left = (xidx - d, yidx)
+            x_down = (xidx, yidx - d)
+            x_right = (xidx + d, yidx)
+            x_up = (xidx, yidx + d)
+            data_left = self.get_data_idx(x_left)
+            data_down = self.get_data_idx(x_down)
+            data_right = self.get_data_idx(x_right)
+            data_up = self.get_data_idx(x_up) 
+            points = [data, data_left, data_down, data_right, data_up]
+            for i in [x >= self.occupancy_threshold for x in points]:
+                if i:
+                    count += 1
+
+        return 2 * count * occupancy_cost_factor
+
     def plot(self, alpha=1, min_val=0, origin='lower'):
         """
         plot the grid map
         """
-        plt.imshow(self.data, vmin=min_val, vmax=1, origin=origin, interpolation='none', alpha=alpha)
-        plt.draw()
+        # plt.imshow(self.data, vmin=min_val, vmax=1, origin=origin, interpolation='none', alpha=alpha)
+        # plt.draw()
+        return
 
     @staticmethod
     def from_png(filename, cell_size):
@@ -221,6 +244,11 @@ class OccupancyGridMap:
         """
         ogm_data = png_to_ogm(filename, normalized=True)
         ogm_data_arr = numpy.array(ogm_data)
+        #print(ogm_data_arr.shape)
+        #(280, 477)
+        #print(type(ogm_data_arr))
+        #np.ndarray
+        #print(ogm_data_array[1:1000])
         ogm = OccupancyGridMap(ogm_data_arr, cell_size)
 
         return ogm

@@ -15,6 +15,7 @@ import geometry_msgs
 from geometry_msgs.msg import Twist
 from among_us.msg import RobotTaskUpdate
 from visualization_msgs.msg import Marker, MarkerArray
+from std_msgs.msg import Float32
 import time
 from time import sleep
 
@@ -45,7 +46,7 @@ def controller(robot_frame, target_frame):
   r = rospy.Rate(10) # 10hz
 
   K1 = .3
-  K2 = .3
+  K2 = 2
   K1d = .1
   K2d = .1
   # Loop until the node is killed with Ctrl-C
@@ -62,10 +63,8 @@ def controller(robot_frame, target_frame):
     #TODO: Replace 'SOURCE FRAME' and 'TARGET FRAME' with the appropriate TF frame names.
     #trans = tfBuffer.lookup_transform('SOURCE FRAME', 'TARGET FRAME', rospy.Time())
     try: 
+
       trans = tfBuffer.lookup_transform(robot_frame, target_frame, rospy.Time()) ##MAKE CHANGES HERE TO ARGUMENTS
-
-
-
       # Process trans to get your state error
       # Generate a control command to send to the robot
       translation_x_error = trans.transform.translation.x
@@ -82,12 +81,15 @@ def controller(robot_frame, target_frame):
 
       last_translation_x_error = translation_x_error
       last_rotation_error = rotation_error
+      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .2:
 
-      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .3:
+        K2 = 2
         publish_task_update(robot_frame, False, True)
         control_command = Twist()
         control_command.linear.x = 0
         control_command.angular.z = 0
+        pub.publish(control_command)
+        continue
         
         ### Publish to 'robot_name/task' with need_path_update!
 
@@ -97,11 +99,13 @@ def controller(robot_frame, target_frame):
 
       
       max_rotation_speed = .3
-      max_translation_speed = 2
+      max_translation_speed = 1
+      if K2 > .2:
+        K2 = K2 * .97
+  
 
 
-
-      if abs(rotation_error) > .2:
+      if abs(rotation_error) > .1:
         if abs(rotation_error * -K2) > max_rotation_speed:
           control_command.angular.z = max_rotation_speed * (-rotation_error)/abs(rotation_error)
         else:
@@ -115,6 +119,23 @@ def controller(robot_frame, target_frame):
           control_command.linear.x = max_translation_speed* translation_x_error/abs(translation_x_error)
         else:
           control_command.linear.x = translation_x_error * K1 
+
+        
+        '''
+        try:
+          if (translation_x_error > .2):
+            print(robot_name)
+            ##if (r != inf):
+            msg = rospy.wait_for_message("/" + robot_name + "/r", Float32, 100)
+            print('got an r message at the very least')
+            print(msg)
+            if (msg.data < .2):
+              print('published task')
+              publish_task_update(robot_frame, True, False) ## Needs new a star
+        except Exception as e:
+          print('Timeout waiting for robot_name/r')
+        '''
+          
       
 
 
@@ -166,11 +187,11 @@ if __name__ == '__main__':
   robot3Tasks = ["task7", "task1", "task2", "task4"]
   robot4Tasks = ["task8", "task9", "task4", "task2"]
   robot5Tasks = ["task9", "task8", "task3", "task6"]
-  #robot6Tasks = ["task10", "task6", "task1", "task8"]
-  #robot7Tasks = ["task1", "task4", "task5", "task10"]
+  robot6Tasks = ["task10", "task6", "task1", "task8"]
+  robot7Tasks = ["task1", "task4", "task5", "task10"]
 
   robotTasks = {"robot0": robot0Tasks, "robot1": robot1Tasks, "robot2": robot2Tasks, 
-  "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks}
+  "robot3": robot3Tasks, "robot4": robot4Tasks, "robot5": robot5Tasks, "robot6": robot6Tasks, "robot7": robot7Tasks}
 
   rospy.init_node('among_us_controller', anonymous=True)
 
@@ -179,5 +200,6 @@ if __name__ == '__main__':
 
   try:
     controller(robot_name, robot_name + 'goal')
+    print("I'll bet you 100 bucks this doesn't")
   except rospy.ROSInterruptException:
     pass
