@@ -65,7 +65,7 @@ def path_publisher(robot_name):
             sleep(5)
 
         except Exception as e:
-           print(e)
+            print(e)
 
         
 if __name__ == '__main__':

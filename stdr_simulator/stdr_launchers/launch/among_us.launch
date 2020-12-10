@@ -13,8 +13,8 @@
 	<arg name="robot5x" default="14" />
 	<arg name="robot6x" default="13" />
 	<arg name="robot7x" default="14" />
-	<arg name="robot0y" default="10" />
-	<arg name="robot1y" default="11" />
+	<arg name="robot0y" default="11" />
+	<arg name="robot1y" default="10" />
 	<arg name="robot2y" default="10" />
 	<arg name="robot3y" default="8" />
 	<arg name="robot4y" default="11" />
@@ -24,6 +24,15 @@
 	<arg name="crewmates" default="robot0 robot1 robot2 robot3 robot4 robot5" />
 	<arg name="imposter1target" default="None" />
 	<arg name="imposter2target" default="None" />
+	<arg name="robotsWithTasks" default="robot0 robot1 robot2 robot3 robot4 robot5" />
+	<arg name="robot0Path" default="[]" />
+	<arg name="robot1Path" default="[]" />
+	<arg name="robot2Path" default="[]" />
+	<arg name="robot3Path" default="[]" />
+	<arg name="robot4Path" default="[]" />
+	<arg name="robot5Path" default="[]" />
+	<arg name="robot6Path" default="[]" />
+	<arg name="robot7Path" default="[]" />
 	
 
 
@@ -51,9 +60,18 @@
 	    <param name="robot7/positionX" value="$(arg robot7x)" />
 	    <param name="robot7/positionY" value="$(arg robot7y)" />
 	    <param name="alive_crewmates" value="$(arg crewmates)" />
-	    <param name="imposter1/target" value = "$(arg imposter1target)" />
-	    <param name="imposter2/target" value = "$(arg imposter2target)" />
-	    
+	    <param name="imposter1/target" value="$(arg imposter1target)" />
+	    <param name="imposter2/target" value="$(arg imposter2target)" />
+	    <param name="robots_with_tasks" value="$(arg robotsWithTasks)" />
+	    <param name= "robot0/path" value="$(arg robot0Path)" />
+	    <param name= "robot1/path" value="$(arg robot1Path)" />
+	    <param name= "robot2/path" value="$(arg robot2Path)" />
+	    <param name= "robot3/path" value="$(arg robot3Path)" />
+	    <param name= "robot4/path" value="$(arg robot4Path)" />
+	    <param name= "robot5/path" value="$(arg robot5Path)" />
+	    <param name= "robot6/path" value="$(arg robot6Path)" />
+	    <param name= "robot7/path" value="$(arg robot7Path)" />
+ 	    
 
 	<node pkg="tf" 
           	type="static_transform_publisher" 

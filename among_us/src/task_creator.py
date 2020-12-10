@@ -19,7 +19,6 @@ import tf2_ros
 import tf2_msgs.msg
 import geometry_msgs
 from among_us.msg import RobotTaskUpdate
-from a_star_function import a_star_function
 import math
 import time
 from time import sleep

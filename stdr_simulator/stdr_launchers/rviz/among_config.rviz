@@ -48,6 +48,14 @@ Visualization Manager:
       Plane: XY
       Plane Cell Count: 40
       Reference Frame: <Fixed Frame>
+      Value: 
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: game_ending_text
+      Name: Marker
+      Namespaces:
+        map: true
+      Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true
@@ -66,6 +74,70 @@ Visualization Manager:
       Topic: /map
       Unreliable: false
       Use Timestamp: false
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot0/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 0; 0; 178
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot1/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 25; 255; 25
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot2/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 50; 50; 50
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot3/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 51; 255; 255
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot4/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 229; 0; 0
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot5/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 25; 127; 25
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot6/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 204; 76; 204
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot7/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 102; 51; 0
       Value: true
     - Class: rviz/TF
       Enabled: true

@@ -22,7 +22,7 @@ def find_nearest_robot(imposter):
     iy = rospy.get_param(imposter + "/positionY")
 
     smallest_distance = float('inf')
-    closest_robot = None
+    closest_robot = 'None'
     for c in crewmates:
         cx = rospy.get_param(c + "/positionX")
         cy  = rospy.get_param(c + "/positionY")
@@ -30,10 +30,10 @@ def find_nearest_robot(imposter):
 
         if dist < smallest_distance:
             if imposter == 'robot6':
-                otherTarget = rospy.get_param('imposter2/target')
+                otherImpostorTarget = rospy.get_param('imposter2/target')
             else:
-                otherTarget = rospy.get_param('imposter1/target')
-            if c != otherTarget:
+                otherImpostorTarget = rospy.get_param('imposter1/target')
+            if c != otherImpostorTarget:
                 smallest_distance = dist
                 closest_robot = c
     time2 = time.time()
