@@ -45,7 +45,7 @@ def parameter_server(robot_name):
 	    robotY = message.pose.pose.position.y
 	    rospy.set_param('/' + robot_name + '/positionX', robotX)
 	    rospy.set_param('/' + robot_name + '/positionY', robotY)
-	    sleep(5)
+	    sleep(3)
 
 
 

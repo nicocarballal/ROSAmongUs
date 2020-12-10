@@ -36,7 +36,7 @@
   <arg name="free_threshold" default="0.03" />
 
   <!-- Random fraction of scan rays to process (a hack for speed). -->
-  <arg name="random_downsample" default="0.1" />
+  <arg name="random_downsample" default="0.01" />
 
   <!-- Mapper node. -->
   <node name="mapper"

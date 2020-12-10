@@ -263,6 +263,7 @@ class OccupancyGrid2d(object):
             rospy.logwarn("%s: Turtlebot roll/pitch is too large.", self._name)
 
         # Loop over all ranges in the LaserScan.
+    
         for idx, r in enumerate(msg.ranges):
             
             # Randomly throw out some rays to speed this up.

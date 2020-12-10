@@ -25,8 +25,8 @@ import numpy as np
 from utils import listToString
         
 def initialize():
-    print('Give the crewmates a 30 second head start')
-    sleep(30)
+    print('Give the crewmates a 60 second head start')
+    sleep(60)
     while not rospy.is_shutdown():
         kill_checker()
 
