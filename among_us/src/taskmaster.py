@@ -36,7 +36,7 @@ from utils import listToString
 def taskmaster():
     robot_name = sys.argv[1]
     if robot_name == 'robot6' or robot_name == 'robot7':
-      sleep(100)
+      sleep(30)
     while not rospy.is_shutdown():
       if robot_name == 'robot6' or robot_name == 'robot7':
         task_manager_imposter(robot_name)

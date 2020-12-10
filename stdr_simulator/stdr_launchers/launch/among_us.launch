@@ -13,8 +13,8 @@
 	<arg name="robot5x" default="14" />
 	<arg name="robot6x" default="13" />
 	<arg name="robot7x" default="14" />
-	<arg name="robot0y" default="10" />
-	<arg name="robot1y" default="11" />
+	<arg name="robot0y" default="11" />
+	<arg name="robot1y" default="10" />
 	<arg name="robot2y" default="10" />
 	<arg name="robot3y" default="8" />
 	<arg name="robot4y" default="11" />

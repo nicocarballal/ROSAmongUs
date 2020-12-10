@@ -75,6 +75,70 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot0/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 0; 0; 178
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot1/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 25; 255; 25
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot2/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 0; 0; 0
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot3/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 51; 255; 255
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot4/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 229; 0; 0
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot5/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 25; 127; 25
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot6/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 204; 76.5; 204
+      Value: true
+    - Class: rviz/Path
+      Enabled: true
+      Topic: robot7/path
+      Name: Path
+      Line Style: Billboards
+      Line Width: 0.3
+      Color: 102; 51; 0
+      Value: true
     - Class: rviz/TF
       Enabled: true
       Frame Timeout: 15

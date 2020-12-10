@@ -11,6 +11,15 @@ python among_us/src/parameter_server.py robot4 &
 python among_us/src/parameter_server.py robot5 &
 python among_us/src/parameter_server.py robot6 &
 python among_us/src/parameter_server.py robot7 &
+python among_us/src/path_publisher.py robot0 &
+python among_us/src/path_publisher.py robot1 &
+python among_us/src/path_publisher.py robot2 &
+python among_us/src/path_publisher.py robot3 &
+python among_us/src/path_publisher.py robot4 &
+python among_us/src/path_publisher.py robot5 &
+python among_us/src/path_publisher.py robot6 &
+python among_us/src/path_publisher.py robot7 &
+
 #python among_us/src/a_star_function.py &
 python among_us/src/taskmaster.py robot0 &
 python among_us/src/taskmaster.py robot1 &
@@ -31,7 +40,6 @@ python among_us/src/robot_control.py robot5 &
 python among_us/src/robot_control.py robot6 &
 python among_us/src/robot_control.py robot7 &
 python among_us/src/kill_checker.py &
-#python among_us/src/game_ending_checker.py &
-#python among_us/src/path_publisher.py robot0 &
+python among_us/src/game_ending_checker.py &
 
 #python among_us/src/robot_control1.py &

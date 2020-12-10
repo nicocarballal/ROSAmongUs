@@ -39,7 +39,7 @@ def callback(message, args):
   marker.scale.x = 0.35
   marker.scale.y = 0.35
   marker.scale.z = 0.35
-  if (random.randint(1,10) == 1):
+  if (random.randint(1,20) == 1):
     if not robotKilled[robot_name]:
       alive_crewmates = rospy.get_param('alive_crewmates')
       alive_crewmates = alive_crewmates.split()

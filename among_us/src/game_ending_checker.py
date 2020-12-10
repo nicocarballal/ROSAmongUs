@@ -95,6 +95,7 @@ def game_ending_checker():
             marker.text = "IMPOSTORS HAVE KILLED EVERYONE!"
 
             pub.publish(marker)
+    sleep(5)
 
 
 
