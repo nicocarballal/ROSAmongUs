@@ -251,7 +251,7 @@ def task_manager(robot_name):
     r.sleep()
 
   except Exception as e:
-    if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 4):
+    if (len(robotPaths[robot_name]) == 0 and len(robotTasks[robot_name]) == 2):
       X = crewmateX
       Y = crewmateY
       X = round(X*4)/4
@@ -320,15 +320,15 @@ if __name__ == '__main__':
     "task6": (9, 7.5), "task7": (15.5, 5.5), "task8": (16.25, 7.75), "task9": (22.25, 7.25), "task10": (18,10)}
 
 
-    robot0Tasks = ["task1", "task6", "task4", "task3"]
-    robot1Tasks = ["task5", "task3", "task2", "task9"]
-    robot2Tasks = ["task7", "task5", "task10", "task1"]
-    robot3Tasks = ["task2", "task1", "task8", "task4"]
-    robot4Tasks = ["task8", "task9", "task4", "task2"]
-    robot5Tasks = ["task4", "task8", "task3", "task6"]
+    robot0Tasks = ["task1", "task6"]#, "task4", "task3"]
+    robot1Tasks = ["task5", "task3"]#, "task2", "task9"]
+    robot2Tasks = ["task7", "task5"]#, "task10", "task1"]
+    robot3Tasks = ["task2", "task1"]#, "task8", "task4"]
+    robot4Tasks = ["task8", "task9"]#, "task4", "task2"]
+    robot5Tasks = ["task4", "task8"]#, "task3", "task6"]
  
-    robot6Tasks = ["task10", "task6", "task1", "task8"]
-    robot7Tasks = ["task9", "task2", "task5", "task10"]
+    robot6Tasks = ["task10", "task6"]#, "task1", "task8"]
+    robot7Tasks = ["task9", "task2"]#, "task5", "task10"]
 
     finishedTasks = {"robot0": False, "robot1": False, "robot2": False, "robot3": False, "robot4": False, 
     "robot5": False}
