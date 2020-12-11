@@ -33,7 +33,7 @@ def find_nearest_robot(imposter):
                 otherImpostorTarget = rospy.get_param('imposter2/target')
             else:
                 otherImpostorTarget = rospy.get_param('imposter1/target')
-            if c != otherImpostorTarget:
+            if c != otherImpostorTarget or len(crewmates) == 1:
                 smallest_distance = dist
                 closest_robot = c
     time2 = time.time()

@@ -45,10 +45,10 @@ def kill_checker():
         dist6 = np.sqrt((X - imposter6X)**2 + (Y - imposter6Y)**2)
         dist7 = np.sqrt((X - imposter7X)**2 + (Y - imposter7Y)**2)
         if dist6 < 1 or dist7 < 1:
-            print("KILLLLLLLLLLLLL")
+            print("CREWMATE WAS KILLED")
             alive_crewmates.remove(crewmate)
             rospy.set_param('alive_crewmates', listToString(alive_crewmates))
-    sleep(3)
+    sleep(1)
 
 
 

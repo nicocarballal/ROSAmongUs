@@ -10,6 +10,7 @@ from among_us.msg import OccupancyGridUpdate
 import numpy as np
 import time 
 from utils import tupleListToString
+import warnings
 
 
 
@@ -17,7 +18,7 @@ from utils import tupleListToString
 def path_cleaner(array):
     path = []
     last_waypoint = array[0]
-    path. append(last_waypoint)
+    path.append(last_waypoint)
     for i in range(1, len(array) - 1):
         waypoint = array[i]
         if (waypoint[0] == array[i-1][0]):
@@ -34,8 +35,6 @@ def path_cleaner(array):
 
 
 def a_star_function(X, Y, taskX, taskY, robotName):
-
-    print('waiting for VIS/MAP')
     timeout = 100
     time1 = time.time()
     gmap = rospy.wait_for_message("map/occupancy_grid", OccupancyGridUpdate, timeout)
@@ -45,7 +44,7 @@ def a_star_function(X, Y, taskX, taskY, robotName):
     cell_size = .25 ## (7, 12.5)
 
     ### Need to fix how it's being reshaped
-
+    warnings.filterwarnings("ignore")
     data_array = np.reshape(gmap.occupancy_grid, (-1, gmap.height))
 
     data_array = np.fliplr(np.rot90(data_array, -1))

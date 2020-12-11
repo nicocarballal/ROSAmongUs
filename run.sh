@@ -1,5 +1,7 @@
+rosclean purge -y
 source ./../devel/setup.bash
 roslaunch stdr_launchers among_us.launch x:=13 y:=10 &
+sleep 2
 source spawn_robots.bash 
 python among_us/src/rviz_track_position.py &
 python among_us/src/task_creator.py &
@@ -20,7 +22,7 @@ python among_us/src/path_publisher.py robot5 &
 python among_us/src/path_publisher.py robot6 &
 python among_us/src/path_publisher.py robot7 &
 
-#python among_us/src/a_star_function.py &
+#python among_us/src/a_star_function.py &g
 python among_us/src/taskmaster.py robot0 &
 python among_us/src/taskmaster.py robot1 &
 python among_us/src/taskmaster.py robot2 &

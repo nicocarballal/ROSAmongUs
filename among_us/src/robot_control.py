@@ -18,6 +18,7 @@ from visualization_msgs.msg import Marker, MarkerArray
 from std_msgs.msg import Float32
 import time
 from time import sleep
+import numpy as np
 
 #Define the method which contains the main functionality of the node.
 def controller(robot_frame, target_frame):
@@ -46,7 +47,7 @@ def controller(robot_frame, target_frame):
   r = rospy.Rate(10) # 10hz
 
   K1 = .3
-  K2 = 4
+  K2 = 6
   K1d = .1
   K2d = .1
   # Loop until the node is killed with Ctrl-C
@@ -81,8 +82,8 @@ def controller(robot_frame, target_frame):
 
       last_translation_x_error = translation_x_error
       last_rotation_error = rotation_error
-      if abs(trans.transform.translation.x) + abs(trans.transform.translation.y) < .2:
-        K2 = 4
+      if np.sqrt(abs(trans.transform.translation.x)**2 + abs(trans.transform.translation.y)**2) < .4:
+        K2 = 6
         publish_task_update(robot_frame, False, True)
         control_command = Twist()
         control_command.linear.x = 0
@@ -100,7 +101,10 @@ def controller(robot_frame, target_frame):
       max_rotation_speed = .2
       max_translation_speed = 1
       if K2 > .1:
-        K2 = K2 * .97
+        if np.sqrt(abs(trans.transform.translation.x)**2 + abs(trans.transform.translation.y)**2) > 3:
+          K2 = K2 * .95
+        else:
+          K2 = K2 * .98
   
 
 

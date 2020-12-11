@@ -11,7 +11,6 @@ def dist2d(point1, point2):
     :param point2:
     :return:
     """
-
     x1, y1 = point1[0:2]
     x2, y2 = point2[0:2]
 

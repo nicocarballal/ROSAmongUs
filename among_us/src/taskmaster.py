@@ -8,7 +8,7 @@
 #in both the package manifest AND the Python file in which it is used.
 import rospy
 import sys
-
+import numpy as np
 
 from visualization_msgs.msg import Marker, MarkerArray
 from nav_msgs.msg import Odometry
@@ -24,14 +24,8 @@ import math
 import time
 from time import sleep
 from imposter_search import find_nearest_robot, kill_nearest_robot
+from sensor_msgs.msg import LaserScan
 from utils import listToString
-
-
-
-
-
-
-
 
 def taskmaster():
     robot_name = sys.argv[1]
@@ -44,6 +38,17 @@ def taskmaster():
         task_manager(robot_name)
       #task_manager('robot2')
 
+def dummy_array(min_pt, size):
+    dummy = []
+    theta = (np.pi * 2) / 667
+    for i in range(size//2+1):
+        distance = min_pt / np.cos(i*theta)
+        dummy.append(distance)
+    left = dummy[:]
+    left.reverse()
+    left.pop()
+    dummy_list = left + dummy
+    return dummy_list
 
 def task_manager_imposter(robot_name):
       try:
@@ -52,20 +57,42 @@ def task_manager_imposter(robot_name):
         # wait for message from imposter and target
         imposterX = rospy.get_param(robot_name + "/positionX")
         imposterY = rospy.get_param(robot_name + "/positionY")
+        alive_crewmates = rospy.get_param("alive_crewmates")
+        alive_crewmates = alive_crewmates.split()
         taskUpdate_msg = rospy.wait_for_message("/" + robot_name + "/taskUpdate", RobotTaskUpdate, timeout)
+      
         ## if robot doesn't have a target
 
         # THIS LOOP ONLY KILLS WHEN AT A WAYPOINT
         
         if taskUpdate_msg.need_path_update: 
-          if len(imposterPaths[robot_name]) > 0:
-            imposterPaths[robot_name].pop(0)
+          if targets[robot_name] not in alive_crewmates:
+
+            print('KILLED THE ROBOT I WAS CHASING AFTER, NEED NEW TARGET')
+            target = find_nearest_robot(robot_name)
+            if robot_name == 'robot6':
+              rospy.set_param('imposter1/target', target)
+            else:
+              rospy.set_param('imposter2/target', target)
+            targetX = rospy.get_param(target + "/positionX")
+            targetY = rospy.get_param(target + "/positionY")
+            X = imposterX
+            Y = imposterY
+            X = round(X*4)/4
+            Y = round(Y*4)/4
+            targetX = round(targetX*4)/4
+            targetY = round(targetY*4)/4
+            path = a_star_function(X, Y, targetX, targetY, robot_name)
+            imposterPaths[robot_name] = path
+            targets[robot_name] = target
+          elif len(imposterPaths[robot_name]) > 0:
             pub_update = rospy.Publisher(robot_name + '/taskUpdate', RobotTaskUpdate, queue_size=10)
             updateMsg = RobotTaskUpdate()
             updateMsg.robot_name = robot_name
             updateMsg.need_task_update = False
             updateMsg.need_path_update = False
             pub_update.publish(updateMsg)
+            imposterPaths[robot_name].pop(0)
           elif len(alive_crewmates) > 0:
             target = find_nearest_robot(robot_name)
             if robot_name == 'robot6':
@@ -82,20 +109,18 @@ def task_manager_imposter(robot_name):
             targetY = round(targetY*4)/4
             path = a_star_function(X, Y, targetX, targetY, robot_name)
             imposterPaths[robot_name] = path
-            imposterPaths[robot_name].pop(0)
             targets[robot_name] = target
           else: 
             return 
 
-        if len(alive_crewmates) > 0 and len(imposterPaths[robot_name]) == 0:
-        
+        if len(imposterPaths[robot_name]) == 0:
           return 
         pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
         t = geometry_msgs.msg.TransformStamped()
         t.header.frame_id = "map_static"
         t.header.stamp = rospy.Time.now()
         t.child_frame_id = robot_name + 'goal'
-        t.transform.translation.x = imposterPaths[robot_name][0][1]
+        t.transform.translation.x = imposterPaths[robot_name][0][0]
         t.transform.translation.y = imposterPaths[robot_name][0][1]
         t.transform.translation.z = 0.0
         t.transform.rotation.x = 0.0
@@ -111,6 +136,8 @@ def task_manager_imposter(robot_name):
       except Exception as e:
         ### Check that there is an alive crewmate if the imposter has nowhere to go
           if len(alive_crewmates) > 0 and len(imposterPaths[robot_name]) == 0:
+            imposterX = rospy.get_param(robot_name + "/positionX")
+            imposterY = rospy.get_param(robot_name + "/positionY")
             X = imposterX
             Y = imposterY
             X = round(X*4)/4
@@ -126,17 +153,21 @@ def task_manager_imposter(robot_name):
             targetY = round(targetY*4)/4
             path = a_star_function(X, Y, targetX, targetY, robot_name)
             imposterPaths[robot_name] = path
-            imposterPaths[robot_name].pop(0)
             targets[robot_name] = target
-          if len(alive_crewmates) == 0 and len(imposterPaths[robot_name]) == 0:
+          if len(imposterPaths[robot_name]) == 0:
             return 
           pub0 = rospy.Publisher('/tf', tf2_msgs.msg.TFMessage, queue_size = 50)
           t = geometry_msgs.msg.TransformStamped()
           t.header.frame_id = "map_static"
           t.header.stamp = rospy.Time.now()
           t.child_frame_id = robot_name + 'goal'
-          t.transform.translation.x = imposterPaths[robot_name][0][0]
-          t.transform.translation.y = imposterPaths[robot_name][0][1]
+          try:
+            t.transform.translation.x = imposterPaths[robot_name][0][0]
+            t.transform.translation.y = imposterPaths[robot_name][0][1]
+          except:
+            print('Impostor has finished chasing after crewmates.')
+            sleep(10000)
+            return 
           t.transform.translation.z = 0.0
           t.transform.rotation.x = 0.0
           t.transform.rotation.y = 0.0
@@ -167,6 +198,24 @@ def task_manager(robot_name):
         updateMsg.need_path_update = False
         pub_update.publish(updateMsg)
       elif len(robotTasks[robot_name]) > 0:
+        sleep(5)
+        lasermsg = rospy.wait_for_message("/" + robot_name + "/laser_0", LaserScan, 10)
+        ranges = lasermsg.ranges
+        mindist = min([i for i in lasermsg.ranges if i > 0.15])
+        minindex = ranges.index(mindist)
+        if minindex < 100:
+            ranges = ranges[minindex + 567:] + ranges
+        elif minindex > 567:
+            ranges = ranges + ranges[:100]
+        ranges = [i for i in ranges if i < mindist + .2]
+        if len(ranges)%2 == 0:
+            ranges = ranges[:len(ranges)-1]
+        flat = dummy_array(mindist, len(ranges))
+        difference = np.asarray(flat) - np.asarray(ranges)
+        if difference[0] and difference[len(difference)-1] < 0:
+            print(robot_name, "This task is convex!")
+        else:
+            print(robot_name, "this task is concave!")
         X = crewmateX
         Y = crewmateY
         X = round(X*4)/4
@@ -240,8 +289,13 @@ def task_manager(robot_name):
     t.header.frame_id = "map_static"
     t.header.stamp = rospy.Time.now()
     t.child_frame_id = robot_name + 'goal'
-    t.transform.translation.x = robotPaths[robot_name][0][0]
-    t.transform.translation.y = robotPaths[robot_name][0][1]
+    try:
+      t.transform.translation.x = robotPaths[robot_name][0][0]
+      t.transform.translation.y = robotPaths[robot_name][0][1]
+    except:
+      print(robot_name + " has finished all its tasks!")
+      sleep(100000)
+      return
     t.transform.translation.z = 0.0
     t.transform.rotation.x = 0.0
     t.transform.rotation.y = 0.0
@@ -262,8 +316,8 @@ if __name__ == '__main__':
     #copies of this node without having multiple nodes with the same
     #name, which ROS doesn't allow.
     print("Taskmaster initiated.")  
-    taskLocations = {"task1": (12, 12), "task2": (8, 5), "task3": (12, 1), "task4": (15,1), "task5": (1,6.5), 
-    "task6": (9, 7.5), "task7": (15.5, 5), "task8": (16, 8), "task9": (22, 7), "task10": (18,10)}
+    taskLocations = {"task1": (12, 12), "task2": (8.25, 5), "task3": (12, 1), "task4": (15,1), "task5": (1.25,6.5), 
+    "task6": (9, 7.5), "task7": (15.5, 5.5), "task8": (16.25, 7.75), "task9": (22.25, 7.25), "task10": (18,10)}
 
 
     robot0Tasks = ["task1", "task6", "task4", "task3"]
@@ -272,19 +326,12 @@ if __name__ == '__main__':
     robot3Tasks = ["task2", "task1", "task8", "task4"]
     robot4Tasks = ["task8", "task9", "task4", "task2"]
     robot5Tasks = ["task4", "task8", "task3", "task6"]
-    '''
-    robot0Tasks = ["task1"]
-    robot1Tasks = ["task1"]
-    robot2Tasks = ["task1"]
-    robot3Tasks = ["task1"]
-    robot4Tasks = ["task1"]
-    robot5Tasks = ["task1"]
-    '''
+ 
     robot6Tasks = ["task10", "task6", "task1", "task8"]
     robot7Tasks = ["task9", "task2", "task5", "task10"]
 
     finishedTasks = {"robot0": False, "robot1": False, "robot2": False, "robot3": False, "robot4": False, 
-    "robot5": False, "robot6": False, "robot7": False}
+    "robot5": False}
 
     initialize = True
 
