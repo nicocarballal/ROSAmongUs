@@ -22,7 +22,7 @@ python among_us/src/path_publisher.py robot5 &
 python among_us/src/path_publisher.py robot6 &
 python among_us/src/path_publisher.py robot7 &
 
-#python among_us/src/a_star_function.py &g
+#python among_us/src/a_star_function.py &
 python among_us/src/taskmaster.py robot0 &
 python among_us/src/taskmaster.py robot1 &
 python among_us/src/taskmaster.py robot2 &
