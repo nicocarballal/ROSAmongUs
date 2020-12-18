@@ -1,53 +1,26 @@
-# AmongUsROS
+# ROSAmongUs (i.e Among Bots!)
+Welcome to Among Bots!
 
+The goal of Among Bots was to create a simulation of the hit multiplayer video game "Among Us" using simple robots in STDR Simulator. In this game, one large team of crewmates aims to complete a set number of tasks while a smaller team aims to sabotage and kill crewmates. The game ends when either all tasks are completed or no crewmates are left in the environment. The real game of "Among Us" involves more complex methods of play such as sabotage and voting, but our goal was to replicate the basic functionality of the game.
+
+Curious to learn everything? [Check out our website!](https://www.notion.so/amongbots/Among-Bots-209a296c2b944559a398b47a704d8020)
 ## Current abilities
 To run everything you need to start up our project run the bash file:
 ```bash
 source run.sh
 ```
 
-These are the commands the bash file runs:
-
-```bash
-roslaunch stdr_launchers among_us.launch
-
-```
-Spawn in the robots from root directory
-```bash
-source spawn_robots.bash
-```
-Run the tracking python script (src/among_us/src) to give visual in RVIZ of location of robots
-```bash
-python rviz_track_position.py
-```
-Run the taskmaster script (src/among_us/src) to start publishing tasks
-```bash
-python taskmaster.py
-```
-Launch RVIZ
-```bash
-roslaunch stdr_launchers among_rviz.launch
-```
-Run the controller script (src/among_us/src) to have your robot0 go to task1
-```bash
-roslaunch stdr_launchers robot_control.py
-```
-Ensure that the rostopic "stdr_server/sources_visualization_marker" is being tracked in RVIZ by SourceMarkers
-
-## Backend
-Within src/stdr_simulator, I've made a few changes to files for launching 
+## Launch Files
+These launch files initialize the key aspects of our game: our robots, our map, our occupancy grid, our topics, and our RVIZ visualization!
 
 | File            | Path                                                                        | What it does                                                                                                                                       |
 |-----------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| among_us.launch | ~/ros_workspaces/project/src/stdr_simulator/stdr_launchers/launch           | Opens the map yaml and specifies robot parameters according to among_us1.yaml file in the resources/robots directory                               |
-| among_us.yaml   | ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/maps/among_us    | Specifies the map for among us. Used adobe illustrator to get the walls of the actual among us map which is stored in among-us-edges-fixed-ai.png. |
-| among_us1.yaml  | ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots | Specifies robot parameters. For right now, it's a slight variation  of pandora_robot.yaml in the same folder.                                      |
-| among_us.xml    | ~/ros_workspaces/project/src/stdr_simulator/stdr_resources/resources/robots | Calls the yaml file. Direct copy except for one change of pandora_robot.xml                                                                        |
-| among_rviz.launch    | ~/ros_workspaces/project/src/stdr_simulator/stdr_launchers/launch | Hosts the parameters for rviz to open manually tracking everything we want it to track so far                                                                        |
-
-
+| among_us.launch | ~/ros_workspaces/project/src/stdr_simulator/stdr_launchers/launch| Added to the stdr_launchers repository, this custom launch file initializes all of the parameters for each of our robots and our game logic. In addition, this launch files calls STDR to open The Skeld png map and initialize the first robot. From there, we spawn the rest of the robots through our spawn_robots.bash script                                                                                                                        |
+| occupancy_grid_combined.launch   | ~/ros_workspaces/project/src/among_us/src | This launch file creates topics and frames for the robot lasers to publish LaserScan data to. Parameters for the occupancy grid are defaulted here along with one visualization topic to which all of the robots will publish to and the path planner will subscribe to.                                                                    |
+| among_rviz.launch    | ~/ros_workspaces/project/src/stdr_simulator/stdr_launchers/launch | Launches RVIZ with our desired initial configuration for visuals.                                                                                   |
 
 ## Custom Python Scripts
+These custom python scripts hold the core functionality of our game. 
 
 | File            | Path                                                                        | What it does                                                                                                                                       |
 |-----------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
