@@ -4,7 +4,7 @@ Welcome to Among Bots!
 The goal of Among Bots was to create a simulation of the hit multiplayer video game "Among Us" using simple robots in STDR Simulator. In this game, one large team of crewmates aims to complete a set number of tasks while a smaller team aims to sabotage and kill crewmates. The game ends when either all tasks are completed or no crewmates are left in the environment. The real game of "Among Us" involves more complex methods of play such as sabotage and voting, but our goal was to replicate the basic functionality of the game.
 
 Curious to learn everything? [Check out our website!](https://www.notion.so/amongbots/Among-Bots-209a296c2b944559a398b47a704d8020)
-## Current abilities
+## Run it!
 To run everything you need to start up our project run the bash file:
 ```bash
 source run.sh
