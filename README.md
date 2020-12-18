@@ -31,7 +31,9 @@ These custom python scripts hold the core functionality of our game.
 | game_ending_checker.py | ~/ros_workspaces/project/src/among_us/src           | Continuously checks if crewmates completed all tasks or if impostors have killed all the crewmates. If crewmates complete all tasks before the impostors have a chance to kill all crewmates, then the crewmates win the game. Otherwise, the impostors win. |
 | occupancy_grid_2d.py | ~/ros_workspaces/project/src/among_us/src           | Initialized by running mapping_node.py and controlling one robot using STDR Tele-op Keyboard and moving the robot through the map. As the game progresses, all robots will contribute to the occupancy grid as they move through the map. Path planning is performed on the continuously updating occupancy grid. |
 | path_publisher.py | ~/ros_workspaces/project/src/among_us/src            | Continuously checks for the robot path parameter and publishes it to RVIZ for visualization purposes. |
-                
+
+## System Design
+![System Design](system-design.jpg "System Design").
 
 
 
