@@ -35,6 +35,9 @@ These custom python scripts hold the core functionality of our game.
 ## System Design
 ![System Design](system-design.jpg "System Design").
 
+## Outside Credits
+We integrated the A* algorithm on occupancy grids from https://github.com/richardos/occupancy-grid-a-star for our project. In addition, we changed the cost functions to account for few bends and prioritizing staying away from walls.
+
 
 
 
